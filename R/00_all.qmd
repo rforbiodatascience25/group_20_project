@@ -1,0 +1,11 @@
+---
+title: "00_all"
+format: html
+output-dir: ../results
+---
+
+This is a test
+
+```{r}
+getwd()
+```
