@@ -1,0 +1,31 @@
+---
+title: "01_load"
+format: html
+---
+
+```{r}
+# | message: false
+library("tidyverse")
+```
+
+## Load data
+
+Data will be fetched from hbiostat from vanderbilt department of biostatistics.
+
+```{r}
+raw_dir <- "../data/_raw/"
+data_file <- "prostate.rda"
+data_loc <- "https://hbiostat.org/data/repo/"
+
+if( !dir.exists(raw_dir) ){
+  dir.create(path = raw_dir)
+}
+
+if( !file.exists(str_c(raw_dir, data_file)) ){
+  download.file(
+    url = str_c(data_loc, data_file),
+    destfile = str_c(raw_dir, data_file),
+    mode = "wb")
+}
+load(file = str_c(raw_dir, data_file))
+```
