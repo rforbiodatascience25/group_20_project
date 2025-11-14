@@ -29,3 +29,15 @@ if( !file.exists(str_c(raw_dir, data_file)) ){
 }
 load(file = str_c(raw_dir, data_file))
 ```
+
+### Meta data
+
+```{r}
+data_dir <- "../data/"
+tsv_file <- "01_meta_dat_load.tsv"
+if (!file.exists(str_c(data_dir, tsv_file)) ) {
+  prostate |>
+    select(patno, stage, status, age, wt, pf, hx, sdate) |>
+    write_tsv(file = str_c(data_dir, tsv_file))
+}
+```
