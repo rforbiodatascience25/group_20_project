@@ -34,10 +34,21 @@ load(file = str_c(raw_dir, data_file))
 
 ```{r}
 data_dir <- "../data/"
-tsv_file <- "01_meta_dat_load.tsv"
-if (!file.exists(str_c(data_dir, tsv_file)) ) {
+meta_tsv_file <- "01_meta_dat_load.tsv"
+if (!file.exists(str_c(data_dir, meta_tsv_file)) ) {
   prostate |>
     select(patno, stage, status, age, wt, pf, hx, sdate) |>
-    write_tsv(file = str_c(data_dir, tsv_file))
+    write_tsv(file = str_c(data_dir, meta_tsv_file))
+}
+```
+
+### Treatment data
+
+```{r}
+treatment_tsv_file <- "01_treatment_dat_load.tsv"
+if (!file.exists(str_c(data_dir, treatment_tsv_file)) ) {
+  prostate |>
+  select(-stage, -status, -age, -wt, -pf, -hx, -sdate) |>
+    write_tsv(file = str_c(data_dir, treatment_tsv_file))
 }
 ```
