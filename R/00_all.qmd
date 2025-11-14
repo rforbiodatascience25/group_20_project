@@ -9,3 +9,14 @@ Loading libraries
 #| message: false
 library("tidyverse")
 ```
+
+## A quick car plot to verify rendering works
+
+```{r}
+ggplot(data = cars,
+       mapping = aes(x = speed,
+                     y = dist)) +
+  geom_point(color = "red") +
+  geom_smooth(color = "blue", method = "lm", se = F) +
+  theme_minimal(base_size = 14)
+```
