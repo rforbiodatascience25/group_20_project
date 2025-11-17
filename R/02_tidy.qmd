@@ -1,0 +1,25 @@
+---
+title: "02_tidy"
+format: html
+---
+
+```{r}
+# | message: false
+library("tidyverse")
+set.seed(2025)
+```
+
+## A quick look
+First we'll take a quick look at the dataset to see how we can tidy it
+```{r}
+# Load the data saved in "01_load.qmd"
+data_dir <- "../data/"
+meta_df <- read_tsv(str_c(data_dir, "01_meta_dat_load.tsv"))
+treatment_df <- read_tsv(str_c(data_dir, "01_treatment_dat_load.tsv"))
+
+#Print random samples
+meta_df |> slice_sample(n = 5) |> print()
+treatment_df |> slice_sample(n = 5) |> print()
+
+```
+
