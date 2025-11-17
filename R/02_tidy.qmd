@@ -84,6 +84,16 @@ The `table1` package is used to generate a quick overview to ensure everything i
 table1::table1(full_df, x = formula(~stage + age + performance | is_alive + treatment))
 ```
 
+## Save the data to drive
+```{r}
+#save a compressed tsv
+data_dir <- "../data/"
+tidy_tsv_file <- "02_dat_tidy.tsv.gz"
+if (!file.exists(str_c(data_dir, tidy_tsv_file))) {
+  full_df |> write_tsv(file = str_c(data_dir, tidy_tsv_file))
+}
+```
+
 ## Session info
 ```{r}
 # sessionInfo()
