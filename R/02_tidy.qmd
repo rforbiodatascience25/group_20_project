@@ -1,0 +1,102 @@
+---
+title: "02_tidy"
+format: html
+---
+
+```{r}
+# | message: false
+library("tidyverse")
+set.seed(2025)
+```
+
+## A quick look
+First we'll take a quick look at the dataset to see how we can tidy it
+```{r}
+# Load the data saved in "01_load.qmd"
+data_dir <- "../data/"
+meta_df <- read_tsv(str_c(data_dir, "01_meta_dat_load.tsv"))
+treatment_df <- read_tsv(str_c(data_dir, "01_treatment_dat_load.tsv"))
+
+#Print random samples
+meta_df |> slice_sample(n = 5) |> print()
+treatment_df |> slice_sample(n = 5) |> print()
+
+```
+## Joining the tables
+Both tables contain information about a patient based on the patient ID in the `patno` column. We perform an inner join based on `patno` to have all variables in one dataframe. If there are observations with no associated ID it will be discarded however this should not be the case and will be checked later.
+```{r}
+#Perform the inner join
+full_df <- inner_join(x = meta_df,
+                      y = treatment_df,
+                      by = "patno")
+full_df |> slice_sample(n = 5) |> print()
+```
+### Checking for lost observations
+If everything is as expected the the number of observations in `full_df` should match the number in `meta_df` and `treatment_df` and the number of variables should be the sum of varibles in the two minus one as `patno` exists in both.
+```{r}
+cat("Size of meta_df:     ", dim(meta_df), "\n")
+cat("Size of treatment_df:", dim(treatment_df), "\n")
+cat("Size of full_df:     ", dim(full_df))
+```
+As we can see, everything is as expected.
+## Splitting columns
+As seen in the random sample of `full_df` the status column contains both dead/alive status and cause of death. We will split these to two columns.
+```{r}
+full_df <- full_df |>
+  separate(col = status,
+           into = c("is_alive", "cause_of_death"),
+           sep = " - ") |> 
+  mutate(is_alive = factor(is_alive))
+         
+full_df |> slice_sample(n = 20) |> print()
+```
+## Renaming variables
+Some of the columns have somewhat non-descriptive names. For these new names will be assigned based on the information available at https://hbiostat.org/data/repo/cprostate.
+```{r}
+full_df <- full_df |> rename(patient_no = "patno",
+                             weight = "wt",
+                             performance = "pf",
+                             medical_history = "hx",
+                             study_date = "sdate",
+                             treatment = "rx",
+                             follow_up_months = "dtime",
+                             sys_blood_pressure= "sbp",
+                             dia_blood_pressure = "dbp",
+                             serum_hemoglobin = "hg",
+                             size_of_primary_tumor = "sz",
+                             combined_index = "sg",
+                             bone_metastases = "bm")
+```
+## Data types
+Finally we cast the `stage`, `is_alive` and `performance` variables to factors. `medical_history` and `bone_metastases` are cast to logical vectors.
+```{r}
+full_df <- full_df |> mutate(stage = factor(as.integer(stage), levels = c(1,2,3,4), ordered = TRUE),
+                             cause_of_death = factor(cause_of_death),
+                             performance = factor(performance),
+                             ekg = factor(ekg),
+                             medical_history = medical_history == 1,
+                             bone_metastases = bone_metastases == 1) # convert to logical
+```
+
+## Overview
+The `table1` package is used to generate a quick overview to ensure everything is as it should be
+```{r}
+table1::table1(full_df, x = formula(~stage + age + performance | is_alive + treatment))
+```
+
+## Save the data to drive
+```{r}
+#save a compressed tsv
+data_dir <- "../data/"
+tidy_tsv_file <- "02_dat_tidy.tsv.gz"
+if (!file.exists(str_c(data_dir, tidy_tsv_file))) {
+  full_df |> write_tsv(file = str_c(data_dir, tidy_tsv_file))
+}
+```
+
+## Session info
+```{r}
+# sessionInfo()
+```
+
+
