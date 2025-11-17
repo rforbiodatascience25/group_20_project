@@ -46,10 +46,8 @@ full_df <- full_df |>
   separate(col = status,
            into = c("is_alive", "cause_of_death"),
            sep = " - ") |> 
-  mutate(is_alive = case_when(is_alive == "alive" ~ TRUE,
-                             TRUE ~ FALSE #default
-  ))
-
+  mutate(is_alive = factor(is_alive))
+         
 full_df |> slice_sample(n = 20) |> print()
 ```
 ## Renaming variables
@@ -88,7 +86,7 @@ table1::table1(full_df, x = formula(~stage + age + performance | is_alive + trea
 
 ## Session info
 ```{r}
-sessionInfo()
+# sessionInfo()
 ```
 
 
