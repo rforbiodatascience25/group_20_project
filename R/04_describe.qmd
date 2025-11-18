@@ -8,19 +8,21 @@ format: html
 ```{r}
 #| message: false
 library("tidyverse")
+library("viridis")
 ```
 
 ## Data description
 
 This dataset is from Green and Bryar who have analysed data from a randomized clinical trial of prostate cancer paitients in stage 3 and 4. In this project the same data will be analysed
 
-## Meta data
+### Meta data
 
 Below is the full prostate data set after tidying.
 
 ```{r}
 #| message: false
 prostate_tidy <- read_tsv("../data/02_dat_tidy.tsv.gz")
+prostate_tidy
 ```
 
 Below is distribution between the stages and status of patients during the trial. Both in graph and table count form.
@@ -52,3 +54,27 @@ prostate_tidy |>
 ```
 
 The dataset consists of 502 patients, as seen above, 96 of were in stage 3 and alive while 193 of stage 3 had died. For stage for 52 were alive and 161 patients were dead.
+
+### Treatment groups
+
+```{r}
+prostate_tidy |>
+  mutate(stage = factor(stage),
+         dosage = factor(dosage)) |>
+  ggplot(aes(x = stage,
+         fill = dosage)) +
+  geom_bar(
+    color = 'black',
+    position = "dodge",
+    alpha = 0.4) +
+  geom_hline(yintercept = 0) +
+  scale_fill_viridis_d(
+    option = "D",
+    labels = function(x) paste0(x, " mg")
+    ) +
+  theme_minimal() +
+  theme(legend.position = "right",
+        axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
+        axis.text.y = element_text(size = 6)) + 
+  labs(x = "Stage", y = "Count", fill = "Dosage")
+```
