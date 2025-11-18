@@ -1,0 +1,72 @@
+---
+title: "PCA"
+format: html
+---
+
+## Load library 
+
+```{r}
+library(readr)
+library(dplyr)
+library(factoextra)
+```
+
+## Load data 
+
+```{r}
+#df <- read_tsv(str_c("../data/02_dat_tidy.tsv.gz"))
+#df <- as.data.frame(df)
+treatment_df <- read_tsv("../data/01_treatment_dat_load.tsv")
+
+```
+
+## PCA
+
+### Numeric
+
+```{r}
+df_numeric <- treatment_df[, -1] |> #don't take in account patient no
+  select(where(is.numeric)) |> 
+  drop_na()
+
+#pca_res <- prcomp(df_numeric, scale = TRUE)
+```
+
+### Normalization 
+
+```{r}
+data_normalized <- scale(df_numeric)
+head(data_normalized)
+```
+
+```{r}
+data_pca <- princomp(data_normalized)
+summary(data_pca)
+```
+
+### Visualization - Scree plot 
+
+```{r}
+fviz_eig(data_pca, addlabels = TRUE)
+```
+
+### Visualization - PC1&PC2 
+
+```{r}
+fviz_pca_ind(data_pca,
+             axes = c(1,2),     
+             repel = TRUE,       
+             col.ind = "blue", 
+             select.var = list(contrib = 10))  
+```
+
+## PCA 2 removing variable 
+
+```{r}
+data_pca2 <- data_normalized[, -5] 
+```
+
+```{r}
+data_pca2 <- princomp(data_normalized)
+fviz_eig(data_pca2, addlabels = TRUE)
+```
