@@ -12,11 +12,30 @@ library("tidyverse")
 
 ## Data description
 
-This dataset is from Green and Bryar who have taken data from a randomized clinical trial of prostate cancer paitients in stage 3 and 4.
+This dataset is from Green and Bryar who have analysed data from a randomized clinical trial of prostate cancer paitients in stage 3 and 4. In this project the same data will be analysed
 
 ## Meta data
 
 ```{r}
 #| message: false
-read_tsv("../data/02_dat_tidy.tsv.gz")
+prostate_tidy <- read_tsv("../data/02_dat_tidy.tsv.gz")
+```
+
+```{r}
+prostate_tidy |>
+  mutate(stage = factor(stage),
+         is_alive = factor(is_alive)) |>
+  ggplot(aes(
+    x = stage,
+    fill = is_alive)) +
+  geom_bar(
+    color = 'black',
+    position = "dodge",
+    alpha = 0.4) +
+  geom_hline(yintercept = 0) +
+  theme_minimal() +
+  theme(legend.position = "right",
+        axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
+        axis.text.y = element_text(size = 6)) + 
+  labs(x = "Stage", y = "Count", fill = "Status")
 ```
