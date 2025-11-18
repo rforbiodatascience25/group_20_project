@@ -1,0 +1,21 @@
+---
+title: "05_model"
+format: html
+---
+
+```{r}
+library("tidyverse")
+library("readr")
+```
+
+## Load data
+```{r}
+#| message: false
+df <- read_tsv("../data/02_dat_tidy.tsv.gz") |> tibble()
+```
+
+```{r}
+print(df)
+```
+
+
