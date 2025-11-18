@@ -16,10 +16,14 @@ This dataset is from Green and Bryar who have analysed data from a randomized cl
 
 ## Meta data
 
+Below is the full prostate data set after tidying.
+
 ```{r}
 #| message: false
 prostate_tidy <- read_tsv("../data/02_dat_tidy.tsv.gz")
 ```
+
+Below is distribution between the stages and status of patients during the trial. Both in graph and table count form.
 
 ```{r}
 prostate_tidy |>
@@ -39,3 +43,12 @@ prostate_tidy |>
         axis.text.y = element_text(size = 6)) + 
   labs(x = "Stage", y = "Count", fill = "Status")
 ```
+
+```{r}
+#| message: false
+prostate_tidy |>
+  group_by(stage, is_alive) |>
+  summarize(n = n())
+```
+
+The dataset consists of 502 patients, as seen above, 96 of were in stage 3 and alive while 193 of stage 3 had died. For stage for 52 were alive and 161 patients were dead.
