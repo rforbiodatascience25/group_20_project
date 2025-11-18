@@ -92,7 +92,8 @@ full_df <- full_df |> rename(patient_no = "patno",
                              serum_hemoglobin = "hg",
                              size_of_primary_tumor = "sz",
                              combined_index = "sg",
-                             bone_metastases = "bm")
+                             bone_metastases = "bm",
+                             serum_prostatic_acid_phosphatase = "ap")
 ```
 
 ## Data types
