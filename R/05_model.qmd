@@ -4,6 +4,7 @@ format: html
 ---
 
 ```{r}
+#| message: false
 library("tidyverse")
 library("readr")
 ```
@@ -15,7 +16,18 @@ df <- read_tsv("../data/02_dat_tidy.tsv.gz") |> tibble()
 ```
 
 ```{r}
-print(df)
+df |> slice_sample(n = 5) |> print()
 ```
+## Preparing data for modelling
 
+## Logistic regression predicting survivability
+A binary logistic regression is perfomed on the `is_alive` column. This is of limited biological relevanc but may reveal an interesting insight.
+```{r}
+df |> mutate(is_alive = case_when(is_alive == "alive" ~ 1,
+                                  is_alive == "dead" ~ 0)) |> 
+  select(is_alive, age, weight, size_of_primary_tumor,serum_prostatic_acid_phosphatase, performance) |> 
+  ggplot(aes(y = is_alive,
+             x = size_of_primary_tumor)) +
+  geom_point()
+```
 
