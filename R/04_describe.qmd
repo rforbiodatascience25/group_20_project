@@ -11,3 +11,12 @@ library("tidyverse")
 ```
 
 ## Data description
+
+This dataset is from Green and Bryar who have taken data from a randomized clinical trial of prostate cancer paitients in stage 3 and 4.
+
+## Meta data
+
+```{r}
+#| message: false
+read_tsv("../data/01_meta_dat_load.tsv")
+```
