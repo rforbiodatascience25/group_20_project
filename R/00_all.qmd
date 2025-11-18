@@ -3,20 +3,10 @@ title: "00_all"
 format: html
 ---
 
-Loading libraries
+# Notebook 1
 
-```{r}
-#| message: false
-library("tidyverse")
-```
+{{< include 01_load.qmd >}}
 
-## A quick car plot to verify rendering works
+# Notebook 2
 
-```{r}
-ggplot(data = cars,
-       mapping = aes(x = speed,
-                     y = dist)) +
-  geom_point(color = "red") +
-  geom_smooth(color = "blue", method = "lm", se = F) +
-  theme_minimal(base_size = 14)
-```
+{{< include 02_tidy.qmd >}}

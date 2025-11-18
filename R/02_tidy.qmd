@@ -4,7 +4,7 @@ format: html
 ---
 
 ```{r}
-# | message: false
+#| message: false
 library("tidyverse")
 set.seed(2025)
 ```
