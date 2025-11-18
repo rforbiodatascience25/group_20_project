@@ -18,7 +18,7 @@ data_file <- "prostate.rda"
 data_loc <- "https://hbiostat.org/data/repo/"
 
 if( !dir.exists(raw_dir) ){
-  dir.create(path = raw_dir)
+  dir.create(path = raw_dir, recursive = TRUE)
 }
 
 if( !file.exists(str_c(raw_dir, data_file)) ){
