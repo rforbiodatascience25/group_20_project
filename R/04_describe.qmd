@@ -9,6 +9,7 @@ format: html
 #| message: false
 library("tidyverse")
 library("viridis")
+library("ggridges")
 ```
 
 ## Data description
@@ -77,4 +78,21 @@ prostate_tidy |>
         axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
         axis.text.y = element_text(size = 6)) + 
   labs(x = "Stage", y = "Count", fill = "Dosage")
+```
+
+We can see there the treatment groups are very evenly distributed.
+
+```{r}
+prostate_tidy |>
+  mutate(is_alive = factor(is_alive),
+         stage = factor(stage)) |>
+  ggplot(aes(x = size_of_primary_tumor, y = is_alive, fill = is_alive)) +
+  geom_density_ridges(alpha = 0.6, color = "black") +
+  facet_wrap(~stage) +
+  scale_fill_manual(
+    values = c("alive" = "#FCFDBFFF", "dead" = "#000004FF")) +
+  labs(title = "Tumor size stratified by status and stage", 
+       x = bquote('Tumor size in' ~ cm^2), y = "Status") +
+  theme_minimal(base_family = "lato") +
+  theme(legend.position = "none")
 ```
