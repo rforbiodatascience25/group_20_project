@@ -18,5 +18,5 @@ This dataset is from Green and Bryar who have taken data from a randomized clini
 
 ```{r}
 #| message: false
-read_tsv("../data/01_meta_dat_load.tsv")
+read_tsv("../data/02_dat_tidy.tsv.gz")
 ```
