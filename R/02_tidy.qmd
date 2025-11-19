@@ -132,20 +132,3 @@ full_df |> write_tsv(file = str_c(data_dir, tidy_tsv_file))
 ```{r}
 # sessionInfo()
 ```
-
-```{r}
-#deletedelete
-source("99_proj_func.R")
-full_df |> select(sys_blood_pressure, dia_blood_pressure) |> 
-  ggplot(aes(x = sys_blood_pressure,
-             y = dia_blood_pressure)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  labs(
-    title = "Diastolic vs systolic bp",
-    x = "Systolic bp",
-    y = "Diastolic bp",
-    caption = "Data from Vanderbilt Department of Biostatistics"
-  ) +
-  best_theme() 
-```
