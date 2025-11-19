@@ -16,18 +16,39 @@ df <- read_tsv("../data/02_dat_tidy.tsv.gz") |> tibble()
 ```
 
 ```{r}
-df |> slice_sample(n = 5) |> print()
+df |> slice_sample(n = 30) |> print()
 ```
 ## Preparing data for modelling
 
 ## Logistic regression predicting survivability
 A binary logistic regression is perfomed on the `is_alive` column. This is of limited biological relevanc but may reveal an interesting insight.
+interesting cols: select(is_alive, age, weight, size_of_primary_tumor,serum_prostatic_acid_phosphatase, performance)
 ```{r}
-df |> mutate(is_alive = case_when(is_alive == "alive" ~ 1,
-                                  is_alive == "dead" ~ 0)) |> 
-  select(is_alive, age, weight, size_of_primary_tumor,serum_prostatic_acid_phosphatase, performance) |> 
+# Turn df is_alive column into numeric variable for modelling:
+df_num <- df |> mutate(is_alive = case_when(is_alive == "alive" ~ 1,
+                                            is_alive == "dead" ~ 0)) |> 
+  select(is_alive, size_of_primary_tumor) |> 
+  drop_na()
+#Pipe it into the ggplt
+df_num |> 
   ggplot(aes(y = is_alive,
              x = size_of_primary_tumor)) +
   geom_point()
+```
+### Fitting the logistic regression
+```{r}
+my_glm_mdl <- glm(formula = is_alive ~ size_of_primary_tumor,
+                  family = binomial(link = "logit"),
+                  data = df_num)
+my_glm_mdl
+```
+
+```{r}
+df_num |> 
+  mutate(my_glm_model = pluck(my_glm_mdl, "fitted.values")) |> 
+  ggplot(aes(x = size_of_primary_tumor, y = is_alive)) +
+  geom_point(alpha = 0.5,
+             size = 3) +
+  geom_line(aes(y = my_glm_model))
 ```
 
