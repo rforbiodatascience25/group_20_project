@@ -142,7 +142,10 @@ full_df |> select(sys_blood_pressure, dia_blood_pressure) |>
   geom_point() +
   geom_smooth(method = "lm") +
   labs(
-    title = "Diastolic vs systolic bp"
+    title = "Diastolic vs systolic bp",
+    x = "Systolic bp",
+    y = "Diastolic bp",
+    caption = "Data from Vanderbilt Department of Biostatistics"
   ) +
   best_theme() 
 ```
