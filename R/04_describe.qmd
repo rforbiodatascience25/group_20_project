@@ -10,6 +10,7 @@ format: html
 library("tidyverse")
 library("viridis")
 library("ggridges")
+source("99_proj_func.R")
 ```
 
 ## Data description
@@ -40,7 +41,7 @@ prostate_tidy |>
     position = "dodge",
     alpha = 0.4) +
   geom_hline(yintercept = 0) +
-  theme_minimal() +
+  best_theme() +
   theme(legend.position = "right",
         axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
         axis.text.y = element_text(size = 6)) + 
@@ -73,7 +74,7 @@ prostate_tidy |>
     option = "D",
     labels = function(x) paste0(x, " mg")
     ) +
-  theme_minimal() +
+  best_theme() +
   theme(legend.position = "right",
         axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
         axis.text.y = element_text(size = 6)) + 
@@ -95,4 +96,36 @@ prostate_tidy |>
        x = bquote('Tumor size in' ~ cm^2), y = "Status") +
   theme_minimal(base_family = "lato") +
   theme(legend.position = "none")
+```
+
+Most importantly we also want to investigate the most prevelant causes of death.
+
+```{r}
+prostate_tidy |>
+  mutate(cause_of_death = factor(cause_of_death)) |>
+  group_by(cause_of_death) |>
+  filter(!is.na(cause_of_death)) |> # for alive
+  summarize(n = n())
+```
+
+Density distribution of the treatment data. Serum hemoglobin and ap.
+
+```{r}
+prostate_tidy |>  
+  pivot_longer(
+    cols = c(ap, serum_hemoglobin),
+    names_to = "variable",
+    values_to = "value") |>
+  ggplot(aes(x = value, fill = variable)) +
+  geom_density(alpha = 0.6) + 
+  coord_cartesian(xlim = c(0, 20), ylim = c(0, 0.5)) +
+  scale_fill_manual(
+    values = c(
+      "ap" = "salmon",
+      "serum_hemoglobin" = "skyblue"),
+    labels = c(
+      "ap" = "AP",
+      "serum_hemoglobin" = "Serum Hemoglobin")) +
+  labs(x = "Value", fill = "Variable") +
+  best_theme()
 ```
