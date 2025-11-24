@@ -10,3 +10,11 @@ format: html
 # Notebook 2
 
 {{< include 02_tidy.qmd >}}
+
+# Notebook 4
+
+{{< include 04_describe.qmd >}}
+
+# Notebook 5
+
+{{< include 05_model.qmd >}}
