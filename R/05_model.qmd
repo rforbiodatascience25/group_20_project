@@ -7,6 +7,8 @@ format: html
 #| message: false
 library("tidyverse")
 library("readr")
+library("broom")
+source("99_proj_func.R") # custom functions and theme
 ```
 
 ## Load data
@@ -20,7 +22,22 @@ df |> slice_sample(n = 30) |> print()
 ```
 ## Preparing data for modelling
 
-## Logistic regression predicting survivability
+## Modelling tumor size as a function of other factors
+Modelling tumor size vs other factors may pose an interesting investigation and see which factors may be important.
+```{r}
+df |> 
+  ggplot(aes(x = size_of_primary_tumor,
+             y = serum_hemoglobin,
+             color = performance)) +
+  geom_point() +
+  scale_color_viridis_d() +
+  best_theme()
+```
+
+
+
+
+## Logistic regression predicting survivability (bad results, shouldnt be used in analysis)
 A binary logistic regression is perfomed on the `is_alive` column. This is of limited biological relevanc but may reveal an interesting insight.
 interesting cols: select(is_alive, age, weight, size_of_primary_tumor,serum_prostatic_acid_phosphatase, performance)
 ```{r}
@@ -33,8 +50,16 @@ df_num <- df |> mutate(is_alive = case_when(is_alive == "alive" ~ 1,
 df_num |> 
   ggplot(aes(y = is_alive,
              x = size_of_primary_tumor)) +
-  geom_point()
+  geom_point() +
+  labs(
+    x = "Size of primary tumor",
+    y = "Alive at time of study (1: YES, 0: NO)",
+    title = "Being alive vs tumor size"
+  ) +
+  best_theme()
 ```
+As we can see there seems to be a threshold for tumor size vs being alive at the time of study. As you can also hear from the formulation this is not a very interesting relationship but we will continue with the analysis anyway.
+
 ### Fitting the logistic regression
 ```{r}
 my_glm_mdl <- glm(formula = is_alive ~ size_of_primary_tumor,
@@ -49,6 +74,13 @@ df_num |>
   ggplot(aes(x = size_of_primary_tumor, y = is_alive)) +
   geom_point(alpha = 0.5,
              size = 3) +
-  geom_line(aes(y = my_glm_model))
+  geom_line(aes(y = my_glm_model)) +
+  labs(
+    x = "Size of primary tumor",
+    y = "Alive at time of study (1: YES, 0: NO)",
+    title = "Being alive vs tumor size"
+  ) +
+  best_theme()
 ```
+It
 
