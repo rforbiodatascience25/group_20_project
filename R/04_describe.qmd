@@ -1,0 +1,131 @@
+---
+title: "04_describe"
+format: html
+---
+
+### Load libraries
+
+```{r}
+#| message: false
+library("tidyverse")
+library("viridis")
+library("ggridges")
+source("99_proj_func.R")
+```
+
+## Data description
+
+This dataset is from Green and Bryar who have analysed data from a randomized clinical trial of prostate cancer paitients in stage 3 and 4. In this project the same data will be analysed
+
+### Meta data
+
+Below is the full prostate data set after tidying.
+
+```{r}
+#| message: false
+prostate_tidy <- read_tsv("../data/02_dat_tidy.tsv.gz")
+prostate_tidy
+```
+
+Below is distribution between the stages and status of patients during the trial. Both in graph and table count form.
+
+```{r}
+prostate_tidy |>
+  mutate(stage = factor(stage),
+         is_alive = factor(is_alive)) |>
+  ggplot(aes(
+    x = stage,
+    fill = is_alive)) +
+  geom_bar(
+    color = 'black',
+    position = "dodge",
+    alpha = 0.4) +
+  geom_hline(yintercept = 0) +
+  best_theme() +
+  theme(legend.position = "right",
+        axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
+        axis.text.y = element_text(size = 6)) + 
+  labs(x = "Stage", y = "Count", fill = "Status")
+```
+
+```{r}
+#| message: false
+prostate_tidy |>
+  group_by(stage, is_alive) |>
+  summarize(n = n())
+```
+
+The dataset consists of 502 patients, as seen above, 96 of were in stage 3 and alive while 193 of stage 3 had died. For stage for 52 were alive and 161 patients were dead.
+
+### Treatment groups
+
+```{r}
+prostate_tidy |>
+  mutate(stage = factor(stage),
+         dosage = factor(dosage)) |>
+  ggplot(aes(x = stage,
+         fill = dosage)) +
+  geom_bar(
+    color = 'black',
+    position = "dodge",
+    alpha = 0.4) +
+  geom_hline(yintercept = 0) +
+  scale_fill_viridis_d(
+    option = "D",
+    labels = function(x) paste0(x, " mg")
+    ) +
+  best_theme() +
+  theme(legend.position = "right",
+        axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
+        axis.text.y = element_text(size = 6)) + 
+  labs(x = "Stage", y = "Count", fill = "Dosage")
+```
+
+We can see there the treatment groups are very evenly distributed.
+
+```{r}
+prostate_tidy |>
+  mutate(is_alive = factor(is_alive),
+         stage = factor(stage)) |>
+  ggplot(aes(x = size_of_primary_tumor, y = is_alive, fill = is_alive)) +
+  geom_density_ridges(alpha = 0.6, color = "black") +
+  facet_wrap(~stage) +
+  scale_fill_manual(
+    values = c("alive" = "#FCFDBFFF", "dead" = "#000004FF")) +
+  labs(title = "Tumor size stratified by status and stage", 
+       x = bquote('Tumor size in' ~ cm^2), y = "Status") +
+  theme_minimal(base_family = "lato") +
+  theme(legend.position = "none")
+```
+
+Most importantly we also want to investigate the most prevelant causes of death.
+
+```{r}
+prostate_tidy |>
+  mutate(cause_of_death = factor(cause_of_death)) |>
+  group_by(cause_of_death) |>
+  filter(!is.na(cause_of_death)) |> # for alive
+  summarize(n = n())
+```
+
+Density distribution of the treatment data. Serum hemoglobin and ap.
+
+```{r}
+prostate_tidy |>  
+  pivot_longer(
+    cols = c(ap, serum_hemoglobin),
+    names_to = "variable",
+    values_to = "value") |>
+  ggplot(aes(x = value, fill = variable)) +
+  geom_density(alpha = 0.6) + 
+  coord_cartesian(xlim = c(0, 20), ylim = c(0, 0.5)) +
+  scale_fill_manual(
+    values = c(
+      "ap" = "salmon",
+      "serum_hemoglobin" = "skyblue"),
+    labels = c(
+      "ap" = "AP",
+      "serum_hemoglobin" = "Serum Hemoglobin")) +
+  labs(x = "Value", fill = "Variable") +
+  best_theme()
+```
