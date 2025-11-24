@@ -27,7 +27,9 @@ prostate_tidy <- read_tsv("../data/02_dat_tidy.tsv.gz")
 prostate_tidy
 ```
 
-Below is distribution between the stages and status of patients during the trial. Both in graph and table count form.
+It contains data from 502 patients with each 20 variables that have been kept track of. The most important in this instance is; stage, combined stage index, cause of death, treatment, dosage and clinical measurements. These include: weight, age, medical history, systolic/diastolic blood pressure, ekg, serum hemoglobin, primary tumor size in cm^2^, serum prostatic acid phosphatase (PAP) and bone metastasis indicator. Distribution of these various parameters can be seen below.
+
+### Stage distribution
 
 ```{r}
 prostate_tidy |>
@@ -41,7 +43,7 @@ prostate_tidy |>
     position = "dodge",
     alpha = 0.4) +
   geom_hline(yintercept = 0) +
-  best_theme() +
+  theme_minimal() +
   theme(legend.position = "right",
         axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
         axis.text.y = element_text(size = 6)) + 
@@ -55,7 +57,7 @@ prostate_tidy |>
   summarize(n = n())
 ```
 
-The dataset consists of 502 patients, as seen above, 96 of were in stage 3 and alive while 193 of stage 3 had died. For stage for 52 were alive and 161 patients were dead.
+As mentioned the dataset consists of 502 patients, as seen above. 96 of were in stage 3 and alive while 193 of had died. For stage for 4, 52 were alive and 161 patients had died.
 
 ### Treatment groups
 
@@ -74,12 +76,14 @@ prostate_tidy |>
     option = "D",
     labels = function(x) paste0(x, " mg")
     ) +
-  best_theme() +
+  theme_minimal() +
   theme(legend.position = "right",
         axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
         axis.text.y = element_text(size = 6)) + 
   labs(x = "Stage", y = "Count", fill = "Dosage")
 ```
+
+### Tumor size distribution
 
 We can see there the treatment groups are very evenly distributed.
 
@@ -98,6 +102,8 @@ prostate_tidy |>
   theme(legend.position = "none")
 ```
 
+### Causes of death
+
 Most importantly we also want to investigate the most prevelant causes of death.
 
 ```{r}
@@ -108,7 +114,9 @@ prostate_tidy |>
   summarize(n = n())
 ```
 
-Density distribution of the treatment data. Serum hemoglobin and ap.
+As expected the leading cause of death of individuals in the study were prostatic cancer or other types, with heart and vascular also have a prominent representation.
+
+### Density of measurements: PAP and Serum hemoglobin
 
 ```{r}
 prostate_tidy |>  
@@ -124,8 +132,10 @@ prostate_tidy |>
       "ap" = "salmon",
       "serum_hemoglobin" = "skyblue"),
     labels = c(
-      "ap" = "AP",
+      "ap" = "PAP",
       "serum_hemoglobin" = "Serum Hemoglobin")) +
   labs(x = "Value", fill = "Variable") +
   best_theme()
 ```
+
+We see the vast majority of the variables are within the bottom range of respectively 0-5 for PAP and 8-20 for Serum hemoglobin. Worth noting is that present in the data set are several outliers who show very high measurements of PAP, up to 900+.
