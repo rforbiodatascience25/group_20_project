@@ -27,13 +27,13 @@ df_long <- df |>
   select(c(patient_no,stage, age, weight, follow_up_months,
                         sys_blood_pressure, dia_blood_pressure,
                         serum_hemoglobin, serum_prostatic_acid_phosphatase,
-                        combined_index)) |> 
+                        combined_index, size_of_primary_tumor)) |> 
   pivot_longer(cols = c(stage, age, weight, follow_up_months,
                         sys_blood_pressure, dia_blood_pressure,
                         serum_hemoglobin, serum_prostatic_acid_phosphatase,
                         combined_index),
                names_to = "variable",
-               values_to = "values")
+               values_to = "value")
 print(df_long |> head(25))
 ```
 ```{r}
@@ -44,6 +44,26 @@ df_long_nested |> print() # note very few columns so we can print the entire thi
 ```
 
 ## Modelling tumor size as a function of other factors
+```{r}
+df_long_nested <- df_long_nested |>
+  mutate(model_object = map(data,
+                            ~lm(size_of_primary_tumor ~ value,
+                                data = .x))) |> 
+  mutate(tidy_model = map(model_object, ~tidy(.x, conf.int = TRUE,
+                                                     conf.level = 0.95))) |> 
+  unnest(cols = tidy_model)
+df_long_nested |> print()
+```
+
+
+
+
+
+
+
+
+
+
 Modelling tumor size vs other factors may pose an interesting investigation and see which factors may be important for tumor development.
 ```{r}
 df |> 
