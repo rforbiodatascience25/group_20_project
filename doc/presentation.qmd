@@ -16,6 +16,6 @@ format:
 
 ## Results and Discussion 
 
-to put image : ![](plot name){fig-algn=center}
+to put image : ![](plot name){fig-align=center}
 
 ## Conclusion 
