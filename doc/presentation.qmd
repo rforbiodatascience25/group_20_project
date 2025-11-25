@@ -8,16 +8,31 @@ format:
     slide-number: true
     transition: "fade"
     title-slide-attributes: 
-      data-background-image: "../Background.png"
+      data-background-image: background.png
 ---
 
-## Introduction {background-image="../Background.png}
+## Introduction {background-image=background.png}
 
+:::: {.columns}
+:::: {.column}
 
+### Dataset
+- Prostate dataset from this data base : https://hbiostat.org/data/
+- The dataset focuses on patients with prostate cancer
 
-## Materials and methods {background-image="../Background.png}
+::::
+:::: {.column}
+put the dataset image 
 
-## Results and Discussion {background-image="../Background.png}
+## Materials and methods {background-image=background.png}
+
+### Data preparation 
+- We converted the raw file into a **tidy dataset**:
+  - one row = one patient
+  - one column = one variable
+  - each variable has a consistent data type
+
+## Results and Discussion {background-image=background.png}
 
 to put image : ![](plot name){fig-align=center}
 
