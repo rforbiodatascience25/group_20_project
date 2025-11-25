@@ -1,6 +1,6 @@
 ---
 title: "Project presentation"
-author: "Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexqnder Videbek, Qiju Chen"
+author: "Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexander Videbek, Qiju Chen"
 date: "2 dec 2025"
 format:
   revealjs:
@@ -8,16 +8,45 @@ format:
     slide-number: true
     transition: "fade"
     title-slide-attributes: 
-      data-background-image: "../Background.png"
+      data-background-image: background.png
 ---
 
-## Introduction {background-image="../Background.png}
+## Introduction {background-image=background.png}
 
+:::: {.columns}
+:::: {.column}
 
+### Dataset
+- Prostate dataset from this data base : https://hbiostat.org/data/
+- The dataset focuses on patients with prostate cancer
 
-## Materials and methods {background-image="../Background.png}
+::::
+:::: {.column}
 
-## Results and Discussion {background-image="../Background.png}
+put the dataset image like this : ![](dataset.png){width=80%}
+
+::::
+::::
+
+## Materials and methods {background-image=background.png}
+
+### Data preparation 
+- We converted the raw file into a **tidy dataset**:
+  - by removing NA values 
+  - creating survival event variables (0 and 1)
+  - removing ap outlines (exceeding 100 to avoid distorsion)
+
+### Survival analysis 
+
+## Results and Discussion {background-image=background.png}
+
+### PCA 
+- didn't work : put the plot 
+
+### Survival analysis 
+- correlation plot (lower number so every variables are independants = that's why we can't do a PCA)
+- survival curve
+- AP curve from the survival analysis 
 
 to put image : ![](plot name){fig-align=center}
 
