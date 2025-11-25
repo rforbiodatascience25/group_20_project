@@ -22,7 +22,7 @@ format:
 
 ::::
 :::: {.column}
-put the dataset image 
+put the dataset image like this : ![](name){width=80%}
 
 ## Materials and methods {background-image=background.png}
 
