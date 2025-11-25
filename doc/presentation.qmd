@@ -1,0 +1,22 @@
+---
+title: "Project presentation"
+author: "Laurine P, ..."
+date: "2 dec 2025"
+format:
+  revealjs:
+    footer: "put a footer"
+    transition: "fade"   # or "slide"
+    #title-slide-attributes: 
+      #data-background-image: put the name of the image we want 
+---
+
+## Introduction 
+
+## Materials and methods 
+
+## Results and Discussion 
+
+to put image : ![](plot name){fig-align=center}
+
+## Conclusion 
+
