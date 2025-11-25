@@ -79,10 +79,10 @@ df_long_nested_model <- df_long_nested |>
                                               conf.level = 0.95))) |> 
   unnest(cols = tidy_model) |> 
   filter(term == "value") |>  #discard intercept terms
-  arrange(p.value) #sort pvalues to reveal highest significance
-df_long_nested_model |> print()
+  mutate(p_adjusted = p.adjust(p.value)) |> # correct for multiple testing
+  arrange(p_adjusted) #sort pvalues to reveal highest significance
+df_long_nested_model |> select(-data, -model_object, -term, -std.error, -statistic) |>  print()
 ```
-
 ### Volcano plot
 A volcano plot shows our estimate slope vs the p-value.
 ```{r}
@@ -123,11 +123,14 @@ df_long_nested_model |>
   best_theme()
 ```
 
+
+
+
 ### Distribution of p-values
 ```{r}
-df_long_nested_model |> select(p.value) |> 
+df_long_nested_model |> select(p_adjusted) |> 
   ggplot() +
-  geom_histogram(aes(x = p.value),
+  geom_histogram(aes(x = p_adjusted),
                  bins = 5) +
   best_theme()
 ```
