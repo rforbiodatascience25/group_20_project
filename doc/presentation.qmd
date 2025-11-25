@@ -1,16 +1,18 @@
 ---
 title: "Project presentation"
-author: "Laurine P, ..."
+author: "Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexqnder Videbek, Qiju Chen"
 date: "2 dec 2025"
 format:
   revealjs:
     footer: "put a footer"
-    transition: "fade"   # or "slide"
+    slide-number: true
+    transition: "fade"
     #title-slide-attributes: 
-      #data-background-image: put the name of the image we want 
+    data-background-image: background.png 
 ---
 
 ## Introduction 
+
 
 ## Materials and methods 
 
