@@ -1,6 +1,6 @@
 ---
 title: "Project presentation"
-author: "Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexander Videbek, Qiju Chen"
+author: "Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexqnder Videbek, Qiju Chen"
 date: "2 dec 2025"
 format:
   revealjs:
@@ -8,37 +8,16 @@ format:
     slide-number: true
     transition: "fade"
     title-slide-attributes: 
-      data-background-image: background.png
+      data-background-image: "../Background.png"
 ---
 
-## Introduction {background-image=background.png}
+## Introduction {background-image="../Background.png}
 
-:::: {.columns}
-:::: {.column}
 
-### Dataset
-- Prostate dataset from this data base : https://hbiostat.org/data/
-- The dataset focuses on patients with prostate cancer
 
-::::
-:::: {.column}
+## Materials and methods {background-image="../Background.png}
 
-put the dataset image like this : ![](name){width=80%}
-
-::::
-::::
-
-## Materials and methods {background-image=background.png}
-
-### Data preparation 
-- We converted the raw file into a **tidy dataset**:
-  - one row = one patient
-  - one column = one variable
-  - each variable has a consistent data type
-
-## Results and Discussion {background-image=background.png}
-
-put : correlation plot, survival curve and AP curve from the survival analysis 
+## Results and Discussion {background-image="../Background.png}
 
 to put image : ![](plot name){fig-align=center}
 
