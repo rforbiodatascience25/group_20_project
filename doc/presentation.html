@@ -10,7 +10,7 @@
 <link href="presentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.5.57">
 
-  <meta name="author" content="Laurine P, …">
+  <meta name="author" content="Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexqnder Videbek, Qiju Chen">
   <meta name="dcterms.date" content="2025-12-02">
   <title>Project presentation</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -326,26 +326,43 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center">
+<section id="title-slide" data-background-image="background.png" class="quarto-title-block center">
   <h1 class="title">Project presentation</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Laurine P, … 
+Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexqnder Videbek, Qiju Chen 
 </div>
 </div>
 </div>
 
   <p class="date">2025-12-02</p>
 </section>
-<section id="introduction" class="slide level2">
+<section id="introduction" class="slide level2" data-background-image="background.png">
 <h2>Introduction</h2>
-</section>
-<section id="materials-and-methods" class="slide level2">
+<div class="columns">
+<div class="column">
+<h3 id="dataset">Dataset</h3>
+<ul>
+<li>Prostate dataset from this data base : https://hbiostat.org/data/</li>
+<li>The dataset focuses on patients with prostate cancer</li>
+</ul>
+</div><div class="column">
+<p>put the dataset image like this : <img data-src="name.png" style="width:80.0%"></p>
+<section id="materials-and-methods" class="slide level2" data-background-image="background.png">
 <h2>Materials and methods</h2>
+<h3 id="data-preparation">Data preparation</h3>
+<ul>
+<li>We converted the raw file into a <strong>tidy dataset</strong>:
+<ul>
+<li>one row = one patient</li>
+<li>one column = one variable</li>
+<li>each variable has a consistent data type</li>
+</ul></li>
+</ul>
 </section>
-<section id="results-and-discussion" class="slide level2">
+<section id="results-and-discussion" class="slide level2" data-background-image="background.png">
 <h2>Results and Discussion</h2>
 <p>to put image : <img data-src="plot%20name.png" class="quarto-figure quarto-figure-center"></p>
 </section>
@@ -353,9 +370,11 @@ Laurine P, …
 <h2>Conclusion</h2>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
-<p>put a footer</p>
+<p>Project-group20</p>
 </div>
 </div>
+</section>
+</div></div>
 </section>
     </div>
   </div>
@@ -408,7 +427,7 @@ Laurine P, …
         progress: true,
 
         // Display the page number of the current slide
-        slideNumber: false,
+        slideNumber: 'c/t',
 
         // 'all', 'print', or 'speaker'
         showSlideNumber: 'all',
