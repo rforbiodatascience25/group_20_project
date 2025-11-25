@@ -121,7 +121,7 @@ As expected the leading cause of death of individuals in the study were prostati
 ```{r}
 prostate_tidy |>  
   pivot_longer(
-    cols = c(ap, serum_hemoglobin),
+    cols = c(serum_prostatic_acid_phosphatase, serum_hemoglobin),
     names_to = "variable",
     values_to = "value") |>
   ggplot(aes(x = value, fill = variable)) +
@@ -129,10 +129,10 @@ prostate_tidy |>
   coord_cartesian(xlim = c(0, 20), ylim = c(0, 0.5)) +
   scale_fill_manual(
     values = c(
-      "ap" = "salmon",
+      "serum_prostatic_acid_phosphatase" = "salmon",
       "serum_hemoglobin" = "skyblue"),
     labels = c(
-      "ap" = "PAP",
+      "serum_prostatic_acid_phosphatase" = "PAP",
       "serum_hemoglobin" = "Serum Hemoglobin")) +
   labs(x = "Value", fill = "Variable") +
   best_theme()
