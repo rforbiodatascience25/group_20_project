@@ -4,19 +4,19 @@ author: "Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alex
 date: "2 dec 2025"
 format:
   revealjs:
-    footer: "put a footer"
+    footer: "Project-group20"
     slide-number: true
     transition: "fade"
-    #title-slide-attributes: 
-    data-background-image: background.png 
+    title-slide-attributes: 
+      data-background-image: background.png 
 ---
 
-## Introduction 
+## Introduction {background-image=background.png}
 
 
-## Materials and methods 
+## Materials and methods {background-image=background.png}
 
-## Results and Discussion 
+## Results and Discussion {background-image=background.png}
 
 to put image : ![](plot name){fig-align=center}
 
