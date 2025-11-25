@@ -1,6 +1,6 @@
 ---
 title: "Project presentation"
-author: "Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexqnder Videbek, Qiju Chen"
+author: "Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexander Videbek, Qiju Chen"
 date: "2 dec 2025"
 format:
   revealjs:
@@ -33,6 +33,8 @@ put the dataset image like this : ![](name){width=80%}
   - each variable has a consistent data type
 
 ## Results and Discussion {background-image=background.png}
+
+put : correlation plot, survival curve and AP curve from the survival analysis 
 
 to put image : ![](plot name){fig-align=center}
 
