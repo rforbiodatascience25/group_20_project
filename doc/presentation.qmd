@@ -23,7 +23,7 @@ format:
 ::::
 :::: {.column}
 
-put the dataset image like this : ![](name){width=80%}
+put the dataset image like this : ![](dataset.png){width=80%}
 
 ::::
 ::::
@@ -35,10 +35,18 @@ put the dataset image like this : ![](name){width=80%}
   - one row = one patient
   - one column = one variable
   - each variable has a consistent data type
+  
+### PCA 
+- didn't work 
+
+### Survival analysis 
 
 ## Results and Discussion {background-image=background.png}
 
-put : correlation plot, survival curve and AP curve from the survival analysis 
+put : 
+- correlation plot (lower number so every variables are independants = that's why we can't do a PCA), PCA and we explain why PCA doesn't work for our dataset 
+- survival curve
+- AP curve from the survival analysis 
 
 to put image : ![](plot name){fig-align=center}
 
