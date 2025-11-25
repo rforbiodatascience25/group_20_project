@@ -127,22 +127,44 @@ A monotonic increase in tumor size across stages suggests that tumor size is a u
 ## 3.3 Correlation among continuous clinical variables
 We compute pairwise correlations for quantitative biological and physiological measurements to identify potential collinearity before model building.
 ```{r}
-full_df %>%
-select(age,
-weight,
-serum_hemoglobin,
-ap,
-size_of_primary_tumor,
-sys_blood_pressure,
-dia_blood_pressure) %>%
-cor(use = "pairwise.complete.obs")
+# Select relevant numeric variables
+corr_df <- full_df %>%
+  select(
+    age,
+    weight,
+    serum_hemoglobin,
+    ap,
+    size_of_primary_tumor,
+    sys_blood_pressure,
+    dia_blood_pressure
+  )
+
+# Compute raw correlation matrix (optional to display)
+corr_mat <- cor(corr_df, use = "pairwise.complete.obs")
+
+# Print raw matrix to console (not emphasized in the report)
+# corr_mat
 ```
-This correlation matrix helps to identify redundant predictors. For example,
-AP and tumor size may show moderate correlation due to their relationship with disease burden, and systolic and diastolic blood pressure are typically highly correlated.
+
+### Correlation heatmap
+
+```{r}
+library(ggcorrplot)
+
+ggcorrplot(
+  corr_mat,
+  hc.order = TRUE,          # hierarchical clustering for clearer structure
+  type = "lower",           # show only lower triangle
+  lab = TRUE,               # display correlation values
+  lab_size = 3,
+  colors = c("#6D9EC1", "white", "#E46726"),  # blue → white → red
+  title = "Correlation matrix of clinical variables",
+  ggtheme = theme_minimal()
+)
+```
+This correlation matrix helps to identify redundant predictors. 
 ## 3.4 Interpretation
 These patterns validate clinically meaningful associations:
-AP strongly reflects metastatic involvement.
-Tumor size progresses with clinical stage.
 Blood pressure and hemoglobin levels show expected physiological correlations.
 These relationships justify including AP, bone metastases, stage, and tumor size as covariates in subsequent survival and Cox proportional hazards models.
 # 4.Survival analysis
@@ -179,9 +201,7 @@ lwd = 2
 )
 
 ```
-The Kaplan–Meier curves illustrate how survival probabilities decline over time
-for patients receiving estrogen therapy versus placebo. Visual inspection of
-curve separation provides an initial indication of potential treatment effects.
+The Kaplan–Meier curves illustrate how survival probabilities decline over time for patients receiving estrogen therapy versus placebo. Visual inspection of curve separation provides an initial indication of potential treatment effects.
 
 To obtain summary estimates:
 ```{r}
