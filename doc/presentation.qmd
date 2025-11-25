@@ -8,15 +8,16 @@ format:
     slide-number: true
     transition: "fade"
     title-slide-attributes: 
-      data-background-image: background.png 
+      data-background-image: "../Background.png"
 ---
 
-## Introduction {background-image=background.png}
+## Introduction {background-image="../Background.png}
 
 
-## Materials and methods {background-image=background.png}
 
-## Results and Discussion {background-image=background.png}
+## Materials and methods {background-image="../Background.png}
+
+## Results and Discussion {background-image="../Background.png}
 
 to put image : ![](plot name){fig-align=center}
 
