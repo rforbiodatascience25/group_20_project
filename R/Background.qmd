@@ -3,6 +3,8 @@ title: "Background"
 format: html
 ---
 
+## Background
+
 Prostate cancer is one of the most common cancer types among men, and approximately 12–13% are expected to be diagnosed at some point during their lifetime. Especially once over the age of 65 where 60% of cases are diagnosed. Methods used to diagnose include Serum hemoglobin testing and prostatic acid phosphatase (PAP) testing. Both tests have been used for many years. Serum hemoglobin tests for low and high glycosylate levels in the hemoglobin, with low levels signaling anemia or chronic disease processes, which may occur in patients with advanced cancer, while high levels can be associated with certain physiological conditions. Variations in hemoglobin therefore serve as a general indicator of systemic health status. Another used indicator is prostatic acid phosphatase (PAP), which is an enzyme produced by the prostate gland. Elevated PAP levels can indicate increased activity in prostate tissue which is often a precursor for prostate cancer or other prostate related diseases. It is hence important to observe these values to determine if a patient might be sick with cancer. Today prostate-specific-antigen (PSA) are used for a more sensitive detection of early stage prostate cancer.
 
 ## Aim
