@@ -1,0 +1,30 @@
+---
+title: "03_augment"
+format: html
+---
+
+## Load library
+
+```{r}
+library(tidyverse)
+```
+
+## Load data
+
+```{r}
+data_dir <- "data/"
+tidy_file <- "02_dat_tidy.tsv.gz"
+
+full_df <- read_tsv("../data/02_dat_tidy.tsv.gz")
+glimpse(full_df)
+```
+
+## Augment data
+
+MAP (Mean Arterial Pressure) is the average blood pressure in a person’s arteries during one cardiac cycle (one heartbeat).
+
+```{r}
+augment_data<- full_df |>
+  mutate(MPA = (sys_blood_pressure+ 2 *dia_blood_pressure) / 3)
+glimpse(augment_data)       
+```
