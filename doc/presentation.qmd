@@ -32,19 +32,19 @@ put the dataset image like this : ![](dataset.png){width=80%}
 
 ### Data preparation 
 - We converted the raw file into a **tidy dataset**:
-  - one row = one patient
-  - one column = one variable
-  - each variable has a consistent data type
-  
-### PCA 
-- didn't work 
+  - by removing NA values 
+  - creating survival event variables (0 and 1)
+  - removing ap outlines (exceeding 100 to avoid distorsion)
 
 ### Survival analysis 
 
 ## Results and Discussion {background-image=background.png}
 
-put : 
-- correlation plot (lower number so every variables are independants = that's why we can't do a PCA), PCA and we explain why PCA doesn't work for our dataset 
+### PCA 
+- didn't work : put the plot 
+
+### Survival analysis 
+- correlation plot (lower number so every variables are independants = that's why we can't do a PCA)
 - survival curve
 - AP curve from the survival analysis 
 
