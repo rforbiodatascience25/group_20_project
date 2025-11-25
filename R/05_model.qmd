@@ -95,10 +95,12 @@ df_long_nested_model |>
   geom_vline(xintercept = 0)+
   best_theme() +
   theme(legend.position = "none") +
-  ggrepel::geom_text_repel(aes(label = variable)) +
+  ggrepel::geom_text_repel(aes(label = case_when(p_adjusted < 0.05 ~ variable,
+                                                 TRUE ~ ""))) +
   labs(
-    title = "Estimate vs -log10 of adjusted p-value"
-  )
+    title = "Estimate vs -log10 of adjusted p-value",
+    y = "-log10 of p-values adjusted for multiple testing",
+    x = "estimate")
 ```
 
 
