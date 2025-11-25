@@ -111,7 +111,7 @@ df_long_nested_model |>
                        y = fct_reorder(variable, estimate),#sort byr the skope
                        xmin = conf.low,
                        xmax = conf.high)) +
-  geom_errorbarh() +
+  geom_errorbar(orientation = "y") +
   geom_point() +
   geom_vline(xintercept = 0) +
   theme_minimal(base_size = 12) +
