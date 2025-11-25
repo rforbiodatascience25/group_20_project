@@ -1,6 +1,6 @@
 ---
 title: "Project presentation"
-author: "Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexqnder Videbek, Qiju Chen"
+author: "Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexander Videbek, Qiju Chen"
 date: "2 dec 2025"
 format:
   revealjs:
@@ -18,6 +18,8 @@ format:
 ## Materials and methods {background-image="../Background.png}
 
 ## Results and Discussion {background-image="../Background.png}
+
+put : correlation plot, survival curve and AP curve from the survival analysis 
 
 to put image : ![](plot name){fig-align=center}
 
