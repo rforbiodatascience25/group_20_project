@@ -125,7 +125,13 @@ df_long_nested_model |>
 ```
 
 ### Multivariate analysis
-Now that we've seen 
+Now that we've seen which variables significantly relate to `size_of_primary_tumor` we can do a multivariate model. 
+```{r}
+model_tidy <- lm(size_of_primary_tumor ~ serum_hemoglobin + medical_history + bone_metastases,
+                 data = df_num) |> 
+  tidy()
+print(model_tidy)
+```
 
 
 ### Distribution of p-values
@@ -183,4 +189,3 @@ df_num |>
   ) +
   best_theme()
 ```
-
