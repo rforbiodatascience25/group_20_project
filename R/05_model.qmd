@@ -12,6 +12,7 @@ source("99_proj_func.R") # custom functions and theme
 ```
 
 ## Load data
+
 ```{r}
 #| message: false
 df <- read_tsv("../data/02_dat_tidy.tsv.gz") |> tibble()
@@ -20,8 +21,11 @@ df <- read_tsv("../data/02_dat_tidy.tsv.gz") |> tibble()
 ```{r}
 df |> slice_sample(n = 30) |> print()
 ```
+
 ## Preparing data for modelling
-Modelling tumor size vs other factors may pose an interesting investigation and see which factors may be important for tumor development. We need to first conert the columns that are not already numeric to a numeric representation (****or ordered factors possibly?). This can be done in a number of ways but to keep it similar we choose that the higher the number the worse for the potion. Eg normal activity gets low and stuck in bed gets high.
+
+Modelling tumor size vs other factors may pose an interesting investigation and see which factors may be important for tumor development. We need to first conert the columns that are not already numeric to a numeric representation (\*\*\*\*or ordered factors possibly?). This can be done in a number of ways but to keep it similar we choose that the higher the number the worse for the potion. Eg normal activity gets low and stuck in bed gets high.
+
 ```{r}
 df_num <- df |>
   mutate(is_alive = case_when(is_alive == "alive" ~ 0,
@@ -47,6 +51,7 @@ df_num <- df |>
 ```
 
 Similarly to the example available at https://r4bds.github.io/lab06.html we need a long version of the data where current variable is stored as an entry.
+
 ```{r}
 df_long <- df_num |>
   select(c(patient_no,stage, age, weight, follow_up_months,
@@ -61,6 +66,7 @@ df_long <- df_num |>
                values_to = "value")
 print(df_long |> head(5))
 ```
+
 ```{r}
 df_long_nested <- df_long |>
   group_by(variable) |>
@@ -69,6 +75,7 @@ df_long_nested |> head(10) |> print() #quick check
 ```
 
 ## Modelling tumor size as a function of other factors
+
 ```{r}
 df_long_nested_model <- df_long_nested |>
   mutate(model_object = map(data,
@@ -84,8 +91,11 @@ df_long_nested_model <- df_long_nested |>
 
 df_long_nested_model |> select(-data, -model_object, -term, -std.error, -statistic) |>  print()
 ```
+
 ### Volcano plot
+
 A volcano plot shows our estimate slope vs the p-value.
+
 ```{r}
 df_long_nested_model |> 
   ggplot(mapping = aes(x = estimate,
@@ -103,8 +113,11 @@ df_long_nested_model |>
     y = "-log10 of p-values adjusted for multiple testing",
     x = "estimate")
 ```
+
 ### Forest plot
+
 The forest plot shows the confidence interval of the modelled slope for all variables
+
 ```{r}
 df_long_nested_model |> 
   filter(p_adjusted < 0.05) |> 
@@ -125,7 +138,9 @@ df_long_nested_model |>
 ```
 
 ### Multivariate analysis
-Now that we've seen which variables significantly relate to `size_of_primary_tumor` we can do a multivariate model. 
+
+Now that we've seen which variables significantly relate to `size_of_primary_tumor` we can do a multivariate model.
+
 ```{r}
 model_tidy <- lm(size_of_primary_tumor ~ serum_hemoglobin + medical_history + bone_metastases,
                  data = df_num) |> 
@@ -133,8 +148,8 @@ model_tidy <- lm(size_of_primary_tumor ~ serum_hemoglobin + medical_history + bo
 print(model_tidy)
 ```
 
-
 ### Distribution of p-values
+
 ```{r}
 df_long_nested_model |> select(p.value) |> 
   ggplot() +
@@ -143,10 +158,10 @@ df_long_nested_model |> select(p.value) |>
   best_theme()
 ```
 
-
 ## Logistic regression predicting survivability (bad results, shouldnt be used in analysis)
-A binary logistic regression is perfomed on the `is_alive` column. This is of limited biological relevanc but may reveal an interesting insight.
-interesting cols: select(is_alive, age, weight, size_of_primary_tumor,serum_prostatic_acid_phosphatase, performance)
+
+A binary logistic regression is perfomed on the `is_alive` column. This is of limited biological relevanc but may reveal an interesting insight. interesting cols: select(is_alive, age, weight, size_of_primary_tumor,serum_prostatic_acid_phosphatase, performance)
+
 ```{r}
 # Turn df is_alive column into numeric variable for modelling:
 df_num <- df |> mutate(is_alive = case_when(is_alive == "alive" ~ 1,
@@ -165,9 +180,11 @@ df_num |>
   ) +
   best_theme()
 ```
+
 As we can see there seems to be a threshold for tumor size vs being alive at the time of study. As you can also hear from the formulation this is not a very interesting relationship but we will continue with the analysis anyway.
 
 ### Fitting the logistic regression
+
 ```{r}
 my_glm_mdl <- glm(formula = is_alive ~ size_of_primary_tumor,
                   family = binomial(link = "logit"),
@@ -188,4 +205,127 @@ df_num |>
     title = "Being alive vs tumor size"
   ) +
   best_theme()
+```
+
+## Depature from linear models and treatment correlation: AP factor and treatment effects
+
+```{r}
+df_num
+```
+
+Reasonably if we look at just treatment data, we can explore their relationship and see if they have any effects beyond linear.
+
+```{r}
+AP_TS_log_tidy_model <- lm(
+  size_of_primary_tumor ~ 
+    log(serum_prostatic_acid_phosphatase) + 
+    serum_hemoglobin + 
+    dosage + 
+    bone_metastases +
+    stage,
+  data = df_num)
+
+print(AP_TS_log_tidy_model |>
+        tidy())
+```
+
+Disregarding non-significant values:
+
+```{r}
+AP_TS_log_tidy_model <- lm(
+  size_of_primary_tumor ~ 
+    log(serum_prostatic_acid_phosphatase) +
+    bone_metastases,
+  data = df_num)
+
+print(AP_TS_log_tidy_model |>
+        tidy())
+```
+
+### Investigating effects on PAP:
+
+```{r}
+AP_es_log_tidy_model <- lm(
+  log(serum_prostatic_acid_phosphatase) ~
+    serum_hemoglobin + 
+    dosage +
+    bone_metastases +
+    stage,
+  data = df_num)
+
+print(AP_es_log_tidy_model |> tidy())
+```
+
+Again filtering for non-significant contributors.
+
+```{r}
+AP_es_log_tidy_model <- lm(
+  log(serum_prostatic_acid_phosphatase) ~
+    bone_metastases +
+    stage,
+  data = df_num)
+
+print(AP_es_log_tidy_model |> tidy())
+```
+
+### Plotting residuals
+
+```{r}
+resid_df <- bind_rows(
+  augment(AP_TS_log_tidy_model) |> mutate(model = "Tumor size ~ log(AP)"),
+  augment(AP_es_log_tidy_model) |> mutate(model = "Log(AP) ~ estrogen")
+)
+```
+
+```{r}
+resid_df |>
+  ggplot(aes(.fitted, .resid)) +
+  geom_point(alpha = 0.8, color = "skyblue") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "salmon") +
+  geom_smooth(method = "loess", se = FALSE, color = "pink") +
+  facet_wrap(~model, scales = "free") +
+  labs(
+    title = "Residual fit for model comparison",
+    x = "Fitted values",
+    y = "Residuals"
+  ) +
+  best_theme()
+```
+
+We can see these models are more promising than the linear fits, we can further see if we can improve these even further.
+
+```{r}
+AP_TS_log_tidy_model <- lm(
+  size_of_primary_tumor ~ 
+    log(serum_prostatic_acid_phosphatase)*dosage +
+    log(serum_prostatic_acid_phosphatase)*serum_hemoglobin +
+    dosage*serum_hemoglobin +
+    bone_metastases,
+  data = df_num)
+
+print(AP_TS_log_tidy_model |>
+        tidy())
+```
+
+```{r}
+AP_es_log_tidy_model <- lm(
+  log(serum_prostatic_acid_phosphatase) ~
+    bone_metastases +
+    stage +
+    I(dosage^2) +
+    I(dosage^2)*serum_hemoglobin,
+  data = df_num)
+
+print(AP_es_log_tidy_model |> tidy())
+```
+
+```{r}
+BM_AP_HB_model <- lm(
+  bone_metastases ~
+    log(serum_prostatic_acid_phosphatase)*I(dosage**2) +
+    log(serum_prostatic_acid_phosphatase)*serum_hemoglobin +
+    dosage*serum_hemoglobin,
+  data = df_num)
+
+print(BM_AP_HB_model |> tidy())
 ```
