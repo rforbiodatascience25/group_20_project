@@ -6,3 +6,5 @@ data/
 .quarto
 /.quarto/
 **/*.quarto_ipynb
+R/figures
+results/R/figures/
