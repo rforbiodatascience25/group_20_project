@@ -262,7 +262,8 @@ cox_vars <- c("treatment_detail",
               "size_of_primary_tumor",
               "bone_metastases",
               "stage",
-              "MAP")
+              "MAP",
+              "weight")
 
 # merge the results
 uni_df <- map_df(cox_vars, function(v) {
@@ -286,6 +287,7 @@ uni_df <- uni_df |>
       variable == "ap" ~ "AP",
       variable == "MAP" ~ "MAP",
       variable == "age" ~ "Age",
+      variable == "weight" ~ "Weight",
       TRUE ~ term
     ),
     HR = estimate,
@@ -335,7 +337,8 @@ cox_multi <- coxph(
     size_of_primary_tumor +
     bone_metastases +
     stage +
-    MAP,
+    MAP+
+    weight,
   data = full_df
   )
 
@@ -364,6 +367,7 @@ multi_df <- tidy(cox_multi, exponentiate = TRUE, conf.int = TRUE) %>%
       Variable == "ap" ~ "AP",
       Variable == "MAP" ~ "MAP",
       Variable == "age" ~ "Age",
+      Variable == "weight" ~ "Weight",
       TRUE ~ Variable
     )
   ) |>
