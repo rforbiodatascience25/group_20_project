@@ -398,7 +398,7 @@ ggplot(multi_df, aes(x = HR, y = Variable)) +
 
 ```
 
-he multivariable Cox proportional hazards model identified several independent predictors of mortality. Bone metastasis, tumor size, AP, and age were strong and statistically significant risk factors, while hemoglobin and the 1.0mg estrogen treatment remained significant protective factors. MAP had no independent prognostic value. Clinical stage lost significance after adjustment, likely due to the stronger explanatory power of AP and metastatic status. These findings highlight that tumor burden biomarkers are the dominant determinants of survival, and 1.0mg estrogen demonstrated a robust and independent therapeutic benefit
+The multivariable Cox proportional hazards model identified several independent predictors of mortality. Bone metastasis, tumor size, AP, and age were strong and statistically significant risk factors, while hemoglobin and the 1.0mg estrogen treatment remained significant protective factors. MAP had no independent prognostic value. Clinical stage lost significance after adjustment, likely due to the stronger explanatory power of AP and metastatic status. These findings highlight that tumor burden biomarkers are the dominant determinants of survival, and 1.0mg estrogen demonstrated a robust and independent therapeutic benefit.
 
 ## 5.3 Interpretation
 
@@ -471,3 +471,12 @@ Patients with extremely elevated AP typically show sharply reduced survival, hig
 ## 6.4 Interpretation
 
 The exploration of outliers reveals distinct, clinically meaningful high-risk subgroups. These findings demonstrate that AP is a strong prognostic indicator and justify its inclusion in multivariable survival modeling (Section 5) as well as in clinical interpretation of treatment outcomes.
+
+# 7. Conclusion
+This survival analysis, based on 491 patients, successfully estimated Kaplan–Meier survival curves and fitted both univariate and multivariable Cox proportional hazards models. Kaplan–Meier comparisons demonstrated significant differences in survival probabilities among the placebo, 0.2 mg, 1.0 mg, and 5.0 mg estrogen treatment groups.
+
+In univariate Cox analyses, Age, AP, tumor size, bone metastasis, and clinical stage were strong adverse prognostic factors, whereas hemoglobin was protective. Among the treatment arms, only the 1.0 mg estrogen dose demonstrated a significantly reduced hazard of death relative to placebo. MAP showed no significant association with survival.
+
+In the multivariable Cox model, bone metastasis, tumor size, AP, and age remained independent predictors of increased mortality. Hemoglobin and the 1.0 mg estrogen treatment continued to show significant protective effects. MAP did not demonstrate independent prognostic value, and clinical stage lost significance after adjustment, likely reflecting the dominant explanatory role of tumor burden markers such as AP and metastatic status.
+
+Overall, these results indicate that tumor burden biomarkers are the primary determinants of survival in this cohort, and that 1.0 mg estrogen provides a meaningful and independent therapeutic benefit.
