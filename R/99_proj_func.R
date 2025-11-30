@@ -21,3 +21,12 @@ save_and_show <- function(plot_name, save_location = "../results/figures/", file
   ggsave(str_c(save_location, plot_name, filetype), curr_plot)
   print(curr_plot) #cursed
 }
+
+save_and_show_table <- function(input_table, table_name, save_location = "../results/csv_tables/", filetype = ".csv"){
+  
+  if (!dir.exists(save_location)) { # check that it exists first
+    dir.create(save_location, recursive = TRUE)}
+  
+  readr::write_csv(input_table, str_c(save_location, table_name, filetype))
+  print(input_table)
+}
