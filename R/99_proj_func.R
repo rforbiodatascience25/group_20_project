@@ -14,3 +14,10 @@ best_theme <- function(){
   plot.caption  = element_text(size = 10, color = "grey40", hjust = 1)
       )
 }
+
+# function for saving and showing plot at once
+save_and_show <- function(plot_name, save_location = "../results/figures/", filetype = ".svg"){
+  curr_plot = get_last_plot()
+  ggsave(str_c(save_location, plot_name, filetype), curr_plot)
+  print(curr_plot) #cursed
+}
