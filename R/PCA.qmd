@@ -3,7 +3,7 @@ title: "PCA"
 format: html
 ---
 
-## Load library 
+## Load library
 
 ```{r}
 library(readr)
@@ -11,7 +11,7 @@ library(dplyr)
 library(factoextra)
 ```
 
-## Load data 
+## Load data
 
 ```{r}
 #df <- read_tsv(str_c("../data/02_dat_tidy.tsv.gz"))
@@ -32,7 +32,7 @@ df_numeric <- treatment_df[, -1] |> #don't take in account patient no
 #pca_res <- prcomp(df_numeric, scale = TRUE)
 ```
 
-### Normalization 
+### Normalization
 
 ```{r}
 data_normalized <- scale(df_numeric)
@@ -44,13 +44,14 @@ data_pca <- princomp(data_normalized)
 summary(data_pca)
 ```
 
-### Visualization - Scree plot 
+### Visualization - Scree plot
 
 ```{r}
 fviz_eig(data_pca, addlabels = TRUE)
+save_and_show("PCA_plot")
 ```
 
-### Visualization - PC1&PC2 
+### Visualization - PC1&PC2
 
 ```{r}
 fviz_pca_ind(data_pca,
@@ -60,7 +61,7 @@ fviz_pca_ind(data_pca,
              select.var = list(contrib = 10))  
 ```
 
-## PCA 2 removing variable 
+## PCA 2 removing variable
 
 ```{r}
 data_pca2 <- data_normalized[, -5] 
