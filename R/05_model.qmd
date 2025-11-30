@@ -12,12 +12,15 @@ source("99_proj_func.R") # custom functions and theme
 ```
 
 ## Load data
+
 We load the data that was prepared for modelling:
+
 ```{r}
 load("../data/04_data_for_modelling.Rdata")
 ```
 
 ## Modelling tumor size as a function of other factors
+
 ```{r}
 df_long_nested_model <- df_long_nested |>
   mutate(model_object = map(data,
@@ -56,6 +59,7 @@ df_long_nested_model |>
     title = "Estimate vs -log10 of adjusted p-value",
     y = "-log10 of p-values adjusted for multiple testing",
     x = "estimate")
+save_and_show("linear_volcano")
 ```
 
 ### Forest plot
@@ -79,7 +83,7 @@ forest_plot <- df_long_nested_model |>
     title = "Variables with significant impact on tumor size"
   ) +
   best_theme()
-save_and_show("forest_plot")
+save_and_show("linear_forest_plot")
 ```
 
 ### Residual plot
@@ -96,6 +100,7 @@ ggplot(df_resids, aes(sample = .resid)) +
   stat_qq_line() +
   facet_wrap(~ variable, scales = "free") +
   theme_minimal()
+save_and_show("linear_qq")
 ```
 
 We see a distinct departure from the normal-distribution in our tails, we can investigate this further by looking at a size histogram and qq-plot.
@@ -106,6 +111,7 @@ df |>
   geom_histogram(aes(x = size_of_primary_tumor), 
                  color = "black", alpha = 0.8, fill = "grey") +
   best_theme()
+save_and_show("tumor_histogram")
 ```
 
 ```{r}
@@ -114,6 +120,7 @@ df |>
   stat_qq() +
   stat_qq_line(color = "salmon") +
   best_theme()
+save_and_show("tumor_qq")
 ```
 
 We can see a definte depature from normality, we can investigate this by doing a log-transformation of our plot.
@@ -125,6 +132,7 @@ df |>
   stat_qq() +
   stat_qq_line(color = "salmon") +
   best_theme()
+save_and_show("log_tumor_qq")
 ```
 
 As we see this is a much cleaner as has a much smaller depature from the normality assumption.
@@ -179,6 +187,7 @@ ggplot(df_resids_log, aes(sample = .resid)) +
   stat_qq_line() +
   facet_wrap(~ variable, scales = "free") +
   theme_minimal()
+save_and_show("log_qq")
 ```
 
 We can see here and based on the p-values in the table and the subsequent qq-plots have a much smaller departure from normality.
@@ -203,6 +212,8 @@ df_long_nested_model_log |>
     title = "Estimate vs -log10 of adjusted p-value",
     y = "-log10 of p-values adjusted for multiple testing",
     x = "estimate")
+
+save_and_show("log_volcano")
 ```
 
 ### Forest plot
@@ -226,6 +237,7 @@ df_long_nested_model_log |>
     title = "Variables with significant impact on tumor size"
   ) +
   best_theme()
+save_and_show("log_forest")
 ```
 
 ### Multivariate analysis
@@ -334,7 +346,7 @@ ap_ts_log_tidy_model |>
   tidy() |>
   mutate(padj = p.adjust(p.value, method = "fdr")) |>
   filter(padj < 0.05) |>
-  print()
+  save_and_show_table("log_tumor_sig_fit")
 ```
 
 Seems that log(AP) does have a significant correlation with tumor size.
@@ -412,7 +424,7 @@ bm_ap_hb_model |>
   tidy() |>
   mutate(padj = p.adjust(p.value, method = "fdr")) |>
   filter(padj < 0.05) |>
-  print()
+  save_and_show_table("bone_sig_fit")
 ```
 
 Here we can confirm that bone metastasis is indeed influenced by both AP and hemoglobin levels but not estrogen treatment dosage.

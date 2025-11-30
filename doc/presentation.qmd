@@ -36,19 +36,49 @@ put the dataset image like this : ![](dataset.png){width=80%}
   - creating survival event variables (0 and 1)
   - removing ap outlines (exceeding 100 to avoid distorsion)
 
-### Survival analysis 
+## Materials and methods {background-image=background2.png} 
+### PCA analysis
 
-## Results and Discussion {background-image=background.png}
+## Materials and methods {background-image=background2.png}
+### Modelling
 
+
+## Materials and methods {background-image=background2.png}
+### Survival analysis
+
+## Results {background-image=background3.png}
 ### PCA 
-- didn't work : put the plot 
+- We should have obtained 2 or 3 principal components
+- We haven't achieved that, so we can't use PCA on our model
 
+![](../results/figures/PCA.svg){width=100%}
+
+## Results {background-image=background3.png}
+### Modelling 
+-put the plots we want 
+![](../results/figures/forest_plot.svg){width=100%}
+
+## Results {background-image=background3.png}
 ### Survival analysis 
-- correlation plot (lower number so every variables are independants = that's why we can't do a PCA)
-- survival curve
-- AP curve from the survival analysis 
+::: {.layout-ncol}
+::: {.column}
+**correlation plot**
+- lower number so every variables are independants 
+- shows that wa can't do a PCA
+:::
+::: {.column}
+![](../results/figures/correlation_plot.svg){width=100%}
+## Results {background-image=background3.png}
+### Survival analysis 
+**survival curve** 
+![](../results/figures/survival_curve_plot.svg){width=100%}
 
-to put image : ![](plot name){fig-align=center}
+## Results {background-image=background3.png}
+### Survival analysis 
+**AP curve** 
 
-## Conclusion 
+## Discussion {background-image=background4.png}
+- just few words to conclude 
+- how we can improve this project ? 
+
 
