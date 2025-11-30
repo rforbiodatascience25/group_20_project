@@ -14,7 +14,7 @@ source("99_proj_func.R")
 
 # 1. Load dataset
 
-In the previous steps (01_load.qmd and 02_tidy.qmd), the original prostate dataset was downloaded, split into metadata and clinical/treatment components, and merged again into a fully tidied dataframe. Variables were cleaned, renamed,and cast into appropriate types, and the resulting dataset was saved as 02_dat_tidy.tsv.gz. Here, we begin the analysis from that tidy dataset
+In the previous steps, the original prostate dataset was downloaded and cleaned, seraval other necessary variables were added, and the resulting dataset was saved as 03_dat_aug.tsv.gz. Here, we begin the analysis from that dataset.
 
 ```{r}
 data_dir <- "data/"
@@ -38,7 +38,7 @@ summary(full_df$ap)
 
 # 2.Baseline comparison between treatment groups
 
-Before conducting survival analyses, it is essential to evaluate whether the treatment groups differ at baseline. The original treatment variable contains four treatment arms ("0.2 mg estrogen", "1.0 mg estrogen", "5.0 mg estrogen", "placebo"). For binary comparisons, we create a combined variable representing any estrogen dose versus placebo.
+Before conducting survival analyses, it is essential to evaluate whether the treatment groups differ at baseline. The original treatment variable contains four treatment arms ("0.2 mg estrogen", "1.0 mg estrogen", "5.0 mg estrogen", "placebo"). For comparisons, we create a combined variable representing any treatment details.
 
 ```{r}
 full_df <- full_df |>
@@ -53,6 +53,8 @@ table(full_df$treatment_detail)
 ```
 
 ## 2.1 Summary statistics by treatment group
+
+Here we take a closer look at several important variables's statistic results.
 
 ```{r}
 full_df |>
@@ -71,9 +73,9 @@ group_by(treatment_detail) |>
 
 These variables were selected because they represent important aspects of patient status: physiological measures, tumor burden indicators, and metastasis. These factors are potential confounders of survival and therefore must be examined at baseline.
 
-## 2.2 Hypothesis tests for group differences Continuous variables were compared using ANOVA, and categorical variables using chi-square tests.
+## 2.2 Hypothesis tests for group differences
 
-These variables were selected because they represent important aspects of patient status: physiological measures, tumor burden indicators, and metastasis. These factors are potential confounders of survival and therefore must be examined at baseline.
+To ensure that patients in different treatment groups have similar health condition. We did statistic tests to see if the sample's difference is significant. Continuous variables were compared using ANOVA, and categorical variables using chi-square tests.
 
 ```{r}
 # Age
@@ -89,7 +91,7 @@ oneway.test(ap ~ treatment_detail, data = full_df)
 oneway.test(serum_hemoglobin ~ treatment_detail, data = full_df)
 ```
 
-Significant differences between groups indicate that treatment allocation is not fully randomized with respect to disease burden or patient health status. Such imbalances motivate the need for multivariable survival modeling (Section 5) to adjust for these covariates when estimating treatment effects. The reaults shows our samples are evenly spread.
+Significant differences between groups indicate that treatment allocation is not fully randomized with respect to disease burden or patient health status. Such imbalances motivate the need for multivariable survival modeling to adjust for these covariates when estimating treatment effects. All the p-values are above 0.05, which indicates our samples are evenly spread.
 
 ## 2.3 Interpretation
 
@@ -148,7 +150,7 @@ corr_df <- full_df |>
     MAP
   )
 
-# Compute raw correlation matrix (optional to display)
+# Compute raw correlation matrix
 corr_mat <- cor(corr_df, use = "pairwise.complete.obs")
 
 # Print raw matrix to console (not emphasized in the report)
@@ -172,7 +174,7 @@ ggcorrplot(
 )
 ```
 
-This correlation matrix helps to identify redundant predictors.
+This correlation matrix helps to identify redundant predictors. All the relevances is below 0.8, which indicates the selected variables can be seen as independent and used in our survival analysis.
 
 ## 3.4 Interpretation
 
@@ -191,7 +193,7 @@ surv_obj <- Surv(time = full_df$follow_up_months,
                  event = full_df$event)
 ```
 
-Next, we estimate the Kaplan–Meier curves for the two treatment groups: estrogen (any dose) vs placebo.
+Next, we estimate the Kaplan–Meier curves for the four treatment groups: 0.2 mg estrogen vs 1.0mg estrogen vs 5.0mg estrogen vs placebo.
 
 ```{r}
 fit_rx <- survfit(surv_obj ~ treatment_detail, data = full_df)
@@ -212,11 +214,10 @@ legend(
   lwd = 2
   )
 
-save_and_show("survival_curves")
 
 ```
 
-The Kaplan–Meier curves illustrate how survival probabilities decline over time for patients receiving estrogen therapy versus placebo. Visual inspection of curve separation provides an initial indication of potential treatment effects.
+The Kaplan–Meier curves illustrate how survival probabilities decline over time for patients receiving estrogen therapy versus placebo. The 1.0mg Estrogen group have a significantly larger survival probability than the other, which provides a brief insight that this can be considered as a effective treatment.
 
 To obtain summary estimates:
 
@@ -233,11 +234,11 @@ logrank_test <- survdiff(surv_obj ~ treatment_detail, data = full_df)
 logrank_test
 ```
 
-A p-value \< 0.05 indicates statistically significant differences in survival between the treatment groups. The direction of effect (better or worse survival under estrogen) can be inferred by comparing the Kaplan–Meier curves or byreviewing hazard ratios in later Cox modeling.
+The p-value is 0.04 (< 0.05), which indicates statistically significant differences in survival between the treatment groups. The direction of effect (better or worse survival under estrogen) can be inferred by comparing the Kaplan–Meier curves or byreviewing hazard ratios in later Cox modeling.
 
 # 5. Cox proportional hazards modeling
 
-Kaplan–Meier curves (Section 4) provide an unadjusted comparison of survival between the treatment groups, but they do not account for baseline imbalances in disease severity or physiological status. To estimate treatment effects while controlling for potential confounders, we apply Cox proportional hazards models. We consider both univariate and multivariable Cox regressions to evaluate the association between clinical variables and mortality risk.
+Kaplan–Meier curves provide an unadjusted comparison of survival between the treatment groups, but they do not account for baseline imbalances in disease severity or physiological status. To estimate treatment effects while controlling for potential confounders, we apply Cox proportional hazards models. We consider both univariate and multivariable Cox regressions to evaluate the association between clinical variables and mortality risk.
 
 ## 5.1 Univariate Cox models
 
@@ -262,7 +263,7 @@ names(uni_results) <- cox_vars
 uni_results
 ```
 
-These results report hazard ratios (HR), confidence intervals, and p-values. Predictors with statistically significant HR \> 1 are associated with increased mortality risk.
+These results report hazard ratios (HR), confidence intervals, and p-values. Predictors with statistically significant are associated with increased mortality risk.
 
 ## 5.2 Multivariable Cox model
 
