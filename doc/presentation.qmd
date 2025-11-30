@@ -48,6 +48,7 @@ format:
 
 ## Materials and methods {background-image=background.png}
 ### Modelling
+![](../results/figures/forest_plot.svg){width=100%}
 
 ## Materials and methods {background-image=background.png}
 ### Survival analysis
