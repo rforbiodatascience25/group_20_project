@@ -212,14 +212,14 @@ plot(
   xlab = "Follow-up time (months)",
   ylab = "Survival probability",
   main = "Survival Curves by Estrogen Dosage",
-  col = c("blue", "red","yellow","green"),
+  col = c("blue", "red","orange","green"),
   lwd = 2
   )
 
 legend(
   "topright",
   legend = levels(full_df$treatment_detail),
-  col = c("blue", "red","yellow","green"),
+  col = c("blue", "red","orange","green"),
   lwd = 2,
   cex = 0.8
   )
