@@ -46,6 +46,14 @@ format:
 ## Materials and methods {background-image=background2.png}
 ### PCA analysis
 
+```{r}
+library(knitr)
+tbl <- read.csv("../results/csv_tables/test_table.csv")
+knitr::kable(head(tbl))
+```
+
+
+
 ## Materials and methods {background-image=background2.png}
 ### Modelling
 ![](../results/figures/forest_plot.svg){width=100%}
