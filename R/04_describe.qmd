@@ -48,6 +48,7 @@ prostate_tidy |>
         axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
         axis.text.y = element_text(size = 6)) + 
   labs(x = "Stage", y = "Count", fill = "Status")
+save_and_show("status_comparison_hist")
 ```
 
 ```{r}
@@ -81,6 +82,7 @@ prostate_tidy |>
         axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
         axis.text.y = element_text(size = 6)) + 
   labs(x = "Stage", y = "Count", fill = "Dosage")
+save_and_show("dosage_dist_by_stage")
 ```
 
 ### Tumor size distribution
@@ -121,7 +123,7 @@ As expected the leading cause of death of individuals in the study were prostati
 ```{r}
 prostate_tidy |>  
   pivot_longer(
-    cols = c(ap, serum_hemoglobin),
+    cols = c(serum_prostatic_acid_phosphatase, serum_hemoglobin),
     names_to = "variable",
     values_to = "value") |>
   ggplot(aes(x = value, fill = variable)) +
@@ -129,13 +131,14 @@ prostate_tidy |>
   coord_cartesian(xlim = c(0, 20), ylim = c(0, 0.5)) +
   scale_fill_manual(
     values = c(
-      "ap" = "salmon",
+      "serum_prostatic_acid_phosphatase" = "salmon",
       "serum_hemoglobin" = "skyblue"),
     labels = c(
-      "ap" = "PAP",
+      "serum_prostatic_acid_phosphatase" = "PAP",
       "serum_hemoglobin" = "Serum Hemoglobin")) +
   labs(x = "Value", fill = "Variable") +
   best_theme()
+save_and_show("distribution_of_sh_and_pap")
 ```
 
 We see the vast majority of the variables are within the bottom range of respectively 0-5 for PAP and 8-20 for Serum hemoglobin. Worth noting is that present in the data set are several outliers who show very high measurements of PAP, up to 900+.
