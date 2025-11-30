@@ -7,8 +7,8 @@ format: html
 
 ```{r}
 #| message: false
-library(tidyverse)
-library(readr)
+library("tidyverse")
+library("readr")
 ```
 
 ## Load tidy data
@@ -82,7 +82,7 @@ df <- read_tsv("../data/02_dat_tidy.tsv.gz") |> tibble()
 df |> slice_sample(n = 30) |> print()
 ```
 
-## Preparing data for modelling
+### Preparing data for modelling
 
 Modelling tumor size vs other factors may pose an interesting investigation and see which factors may be important for tumor development. We need to first conert the columns that are not already numeric to a numeric representation (\*\*\*\*or ordered factors possibly?). This can be done in a number of ways but to keep it similar we choose that the higher the number the worse for the potion. Eg normal activity gets low and stuck in bed gets high.
 
