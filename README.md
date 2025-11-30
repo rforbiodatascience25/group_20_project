@@ -1,2 +1,24 @@
-# group_20_project
-Group 20 project repository
+# Project Contributors
+Laurine Panel s251930 laurinepanel-coder, 
+Rasmus Toeffner-Clausen s235430
+Mathias Glerup s225015 Filtenborg MathiasGF, 
+Alexander Videbek s235354 Lebimle, 
+Qiju Chen s252613 QJ-ChenR
+
+## Group 20 project  
+
+Prostate cancer is one of the most common cancer types among men, and approximately 12–13 percent 
+are expected to be diagnosed at some point during their lifetime. Methods used to diagnose include 
+Serum hemoglobin testing and prostatic acid phosphatase (PAP) testing. 
+Both tests have been used for many years. Serum hemoglobin tests for low and high glycosylate levels in 
+hemoglobin, with low levels signaling anemia or chronic disease processes, 
+which may occur in patients with advanced cancer, while high levels can be associated with certain 
+physiological conditions. Variations in hemoglobin therefore serve as a general indicator of systemic 
+health status. Another indicator is Prostatic acid phosphatase (PAP), which is an enzyme produced by 
+the prostate gland. Elevated PAP levels can indicate increased activity in prostate tissue which is 
+often a precursor for prostate cancer or other prostate related diseases. 
+It is hence important to observe these values to determine if a patient might be sick with cancer. 
+
+## Aim
+
+This project aims to investigate a correlation between Hemoglobin levels and Prostatic acid phosphatase in patients, with the goal to determine if the biomarkers can be used to predict prostate cancer. By analyzing patient date and evaluating it, this project seeks to make a predictive statistical model to support determination of patients might having prostate cancer.
