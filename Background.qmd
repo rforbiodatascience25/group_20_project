@@ -11,4 +11,4 @@ It is hence important to observe these values to determine if a patient might be
 
 
 ## Aim
-This project aims to investigate a correlation between Hemoglobin levels and Prostatic acid phosphatase in patients, with the goal to determine if the biomarkers can be used to predict prostate cancer. By analyzing patient date and evaluating it, this project seeks to make a predictive statistical model to support determination of patients might having prostate cancer. 
+This project aims to investigate a correlation between Hemoglobin levels and Prostatic acid phosphatase in patients, with the goal to determine if the biomarkers can be used to predict prostate cancer. By analyzing patient date and comparing it with the correlation, this project seeks to make a predictive statistical model to support determination of patients with prostate cancer. 
