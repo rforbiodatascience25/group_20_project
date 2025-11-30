@@ -23,7 +23,8 @@ glimpse(full_df)
 ## Filtering out extreme AP values
 Its noted on the Vanderbilt repo that some entries have extremely high AP values. Unfortunantly the explanation is no longer available. For this reason we choose to remove these rows entirely:
 ```{r}
-full_df |> ggplot(aes(x=serum_prostatic_acid_phosphatase)) +
+full_df |>
+  ggplot(aes(x=serum_prostatic_acid_phosphatase)) +
   geom_histogram(binwidth = 100) +
   labs(
     title = "Distribution of AP values"
@@ -32,8 +33,9 @@ full_df |> ggplot(aes(x=serum_prostatic_acid_phosphatase)) +
 ```
 Based on the plot we discard all entries with AP values above 500
 ```{r}
+cutoff <- 250
 full_df <- full_df |> 
-  filter(serum_prostatic_acid_phosphatase <= 250)
+  filter(serum_prostatic_acid_phosphatase <= cutoff)
 ```
 
 
