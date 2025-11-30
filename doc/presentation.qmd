@@ -13,29 +13,22 @@ format:
 
 ## Introduction {background-image=background.png}
 
- - Aim:
- This analysis aims to determine whether the course of prostate cancer can be correlated with any of the observed variables
- 
- **Overview**
- 
-- Dataset
-- Materials and methods
-  - Data tidying
-  - Survival analysis
-  - PCA
+:::: {.columns}
+:::: {.column}
 
-## Dataset {background-image=background.png}
-::: {.layout-ncol}
-::: {.column}
+### Dataset
 - Prostate dataset from this data base : https://hbiostat.org/data/
 - The dataset focuses on patients with prostate cancer
-:::
-::: {.column}
-![](dataset.png){width=100%}
-:::
-:::
 
-## Materials and methods {background-image=background2.png}
+::::
+:::: {.column}
+
+put the dataset image like this : ![](dataset.png){width=80%}
+
+::::
+::::
+
+## Materials and methods {background-image=background.png}
 
 ### Data preparation 
 - We converted the raw file into a **tidy dataset**:
