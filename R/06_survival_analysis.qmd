@@ -9,6 +9,7 @@ library(tidyverse)
 library(survival)
 library(ggplot2)
 library(broom)
+source("99_proj_func.R")
 ```
 
 # 1. Load dataset
@@ -27,6 +28,7 @@ glimpse(full_df)
 ## 1.1 Removing ap outlines
 
 The raw dataset contains several implausible AP values (e.g.999), which likely represent data entry codes or errors. As recommended by the data source, we remove observations with AP values exceeding 100 to avoid distortion in downstream modeling and correlation analyses.
+
 ```{r}
 full_df <- full_df %>%
   filter(ap <= 100)
@@ -72,6 +74,7 @@ These variables were selected because they represent important aspects of patien
 ## 2.2 Hypothesis tests for group differences Continuous variables were compared using ANOVA, and categorical variables using chi-square tests.
 
 These variables were selected because they represent important aspects of patient status: physiological measures, tumor burden indicators, and metastasis. These factors are potential confounders of survival and therefore must be examined at baseline.
+
 ```{r}
 # Age
 oneway.test(age ~ treatment_detail, data = full_df)
@@ -133,7 +136,6 @@ A monotonic increase in tumor size across stages suggests that tumor size is a u
 
 We compute pairwise correlations for quantitative biological and physiological measurements to identify potential collinearity before model building.
 
-
 ```{r}
 # Select relevant numeric variables
 corr_df <- full_df |>
@@ -170,7 +172,6 @@ ggcorrplot(
 )
 ```
 
-<<<<<<< HEAD
 This correlation matrix helps to identify redundant predictors.
 
 ## 3.4 Interpretation
@@ -211,6 +212,8 @@ legend(
   lwd = 2
   )
 
+save_and_show("survival_curves")
+
 ```
 
 The Kaplan–Meier curves illustrate how survival probabilities decline over time for patients receiving estrogen therapy versus placebo. Visual inspection of curve separation provides an initial indication of potential treatment effects.
@@ -229,6 +232,7 @@ A log-rank test formally assesses whether the survival curves of the two treatme
 logrank_test <- survdiff(surv_obj ~ treatment_detail, data = full_df)
 logrank_test
 ```
+
 A p-value \< 0.05 indicates statistically significant differences in survival between the treatment groups. The direction of effect (better or worse survival under estrogen) can be inferred by comparing the Kaplan–Meier curves or byreviewing hazard ratios in later Cox modeling.
 
 # 5. Cox proportional hazards modeling
@@ -238,7 +242,6 @@ Kaplan–Meier curves (Section 4) provide an unadjusted comparison of survival b
 ## 5.1 Univariate Cox models
 
 We first fit univariate Cox models for key predictors identified in Sections 2 and 3, including tumor burden (AP, tumor size, bone metastases), physiological status (hemoglobin, age), and clinical stage.
-
 
 ```{r}
 cox_vars <- c("treatment_detail",
@@ -264,7 +267,6 @@ These results report hazard ratios (HR), confidence intervals, and p-values. Pre
 ## 5.2 Multivariable Cox model
 
 We next fit a multivariable model incorporating treatment group and major clinical covariates. Predictors were chosen based on biological relevance and the exploratory findings from earlier sections.
-
 
 ```{r}
 cox_multi <- coxph(
@@ -306,7 +308,6 @@ nrow(high_ap_df)
 high_ap_df |> select(patient_no, ap, bone_metastases, stage, size_of_primary_tumor)
 ```
 
-
 The 95th percentile threshold provides a data-driven definition of unusually high AP. Patients above this cutoff are flagged as having severe biochemical evidence of disease activity.
 
 ## 6.2 AP and bone metastases
@@ -325,28 +326,30 @@ To quantify risk, we stratify patients into high-risk (AP above the 95th percent
 
 ```{r}
 full_df <- full_df |>
-mutate(
-ap_risk_group = ifelse(ap >= high_ap_threshold, "High AP", "Normal AP"),
-ap_risk_group = factor(ap_risk_group)
-)
+  mutate(
+    ap_risk_group = ifelse(ap >= high_ap_threshold, "High AP", "Normal AP"),
+    ap_risk_group = factor(ap_risk_group)
+    )
 
-fit_ap <- survfit(Surv(follow_up_months, event) ~ ap_risk_group, data = full_df)
+fit_ap <- survfit(
+  Surv(follow_up_months, event) ~ ap_risk_group, data = full_df
+  )
 
 plot(
-fit_ap,
-xlab = "Follow-up time (months)",
-ylab = "Survival probability",
-main = "Survival of High-AP vs Normal-AP Patients",
-col = c("darkred", "darkgreen"),
-lwd = 2
-)
+  fit_ap,
+  xlab = "Follow-up time (months)",
+  ylab = "Survival probability",
+  main = "Survival of High-AP vs Normal-AP Patients",
+  col = c("darkred", "darkgreen"),
+  lwd = 2
+  )
 
 legend(
-"topright",
-legend = levels(full_df$ap_risk_group),
-col = c("darkred", "darkgreen"),
-lwd = 2
-)
+  "topright",
+  legend = levels(full_df$ap_risk_group),
+  col = c("darkred", "darkgreen"),
+  lwd = 2
+  )
 ```
 
 Patients with extremely elevated AP typically show sharply reduced survival, highlighting AP as a powerful prognostic biomarker.
