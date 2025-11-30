@@ -121,7 +121,7 @@ As expected the leading cause of death of individuals in the study were prostati
 ```{r}
 prostate_tidy |>  
   pivot_longer(
-    cols = c(ap, serum_hemoglobin),
+    cols = c(serum_prostatic_acid_phosphatase, serum_hemoglobin),
     names_to = "variable",
     values_to = "value") |>
   ggplot(aes(x = value, fill = variable)) +
