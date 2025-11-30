@@ -14,19 +14,3 @@ best_theme <- function(){
   plot.caption  = element_text(size = 10, color = "grey40", hjust = 1)
       )
 }
-
-# function for saving and showing plot at once
-save_and_show <- function(plot_name, save_location = "../results/figures/", filetype = ".svg"){
-  curr_plot = get_last_plot()
-  ggsave(str_c(save_location, plot_name, filetype), curr_plot)
-  print(curr_plot) #cursed
-}
-
-save_and_show_table <- function(input_table, table_name, save_location = "../results/csv_tables/", filetype = ".csv"){
-  
-  if (!dir.exists(save_location)) { # check that it exists first
-    dir.create(save_location, recursive = TRUE)}
-  
-  readr::write_csv(input_table, str_c(save_location, table_name, filetype))
-  print(input_table)
-}

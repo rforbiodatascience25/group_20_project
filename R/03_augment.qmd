@@ -6,18 +6,17 @@ format: html
 ## Load library
 
 ```{r}
-#| message: false
-library("tidyverse")
-library("readr")
+library(tidyverse)
 ```
 
-## Load tidy data
+## Load data
 
 ```{r}
 data_dir <- "data/"
 tidy_file <- "02_dat_tidy.tsv.gz"
 
 full_df <- read_tsv("../data/02_dat_tidy.tsv.gz")
+glimpse(full_df)
 ```
 
 ## Augment data
@@ -25,149 +24,7 @@ full_df <- read_tsv("../data/02_dat_tidy.tsv.gz")
 MAP (Mean Arterial Pressure) is the average blood pressure in a person’s arteries during one cardiac cycle (one heartbeat).
 
 ```{r}
-#Add new variables
-df_aug <- full_df |>
-  mutate(
-    # variables for modeliing 
-    is_alive_num = case_when(is_alive == "alive" ~ 0,
-                             is_alive == "dead" ~ 1),
-    
-    performance_score = case_when(performance == "normal activity" ~ 0,
-                                  performance == "in bed < 50% daytime" ~ 1,
-                                  performance == "in bed > 50% daytime" ~ 2,
-                                  performance == "confined to bed" ~ 4),
-    
-    ekg_code = case_when(ekg == "normal" ~ 0,
-                         ekg == "benign" ~ 1,
-                         ekg == "heart block or conduction def" ~ 2,
-                         ekg == "rhythmic disturb & electrolyte ch" ~ 3,
-                         ekg == "old MI" ~ 4,
-                         ekg == "recent MI" ~ 5,
-                         ekg == "rhythmic disturb & electrolyte ch" ~ 6,
-                         ekg == "heart strain" ~ 7),
-                         
-    bone_metastases_num = as.numeric(bone_metastases),
-    medical_history_num = as.numeric(medical_history),
-    
-    # variables for survival_analysis
-    event = if_else(is_alive == "dead", 1, 0),
-    
-    follow_up_months = as.numeric(follow_up_months),
-    
-    dosage = as.numeric(str_extract(treatment, "\\d+\\.\\d+")),
-    
-    # set placebo dosage to 0
-    dosage = replace_na(dosage, 0),
-    
-    # create treatment group
-    treatment = case_when(
-      str_detect(treatment, "estrogen") ~ "estrogen",
-      str_detect(treatment, "placebo") ~ "placebo",
-      TRUE ~ NA_character_
-    ),
-    
-    # create treatment detail
-    treatment_detail = case_when(
-      treatment == "placebo" ~ "Placebo",
-      treatment == "estrogen" & dosage == 0.2 ~ "0.2mg Estrogen",
-      treatment == "estrogen" & dosage == 1.0 ~ "1.0mg Estrogen",
-      treatment == "estrogen" & dosage == 5.0 ~ "5.0mg Estrogen",
-      TRUE ~ NA_character_
-    ),
-    treatment_detail = factor(treatment_detail, 
-                              levels = c("Placebo", 
-                                         "0.2mg Estrogen", 
-                                         "1.0mg Estrogen", 
-                                         "5.0mg Estrogen")),
-  )
-# check treatment detail
-count(df_aug, treatment_detail)
-
-# add MAP
-df_aug <- df_aug |>
-  mutate(MAP = (sys_blood_pressure+ 2 *dia_blood_pressure) / 3)
-
-# checking the df_aug
-glimpse(df_aug)
+augment_data<- full_df |>
+  mutate(MPA = (sys_blood_pressure+ 2 *dia_blood_pressure) / 3)
+glimpse(augment_data)       
 ```
-
-## Save augmented data
-```{r}
-write_tsv(df_aug, "../data/03_dat_aug.tsv.gz")
-```
-
-## Prep data for notebook 5
-## Load data
-
-```{r}
-#| message: false
-df <- read_tsv("../data/02_dat_tidy.tsv.gz") |> tibble()
-```
-
-```{r}
-df |> slice_sample(n = 30) |> print()
-```
-
-### Preparing data for modelling
-
-Modelling tumor size vs other factors may pose an interesting investigation and see which factors may be important for tumor development. We need to first conert the columns that are not already numeric to a numeric representation (\*\*\*\*or ordered factors possibly?). This can be done in a number of ways but to keep it similar we choose that the higher the number the worse for the potion. Eg normal activity gets low and stuck in bed gets high.
-
-```{r}
-df_num <- df |>
-  mutate(is_alive = case_when(is_alive == "alive" ~ 0,
-                              is_alive == "dead" ~ 1),
-         performance = case_when(performance == "normal activity" ~ 0,
-                                 performance == "in bed < 50% daytime" ~ 1,
-                                 performance == "in bed > 50% daytime" ~ 2,
-                                 performance == "confined to bed" ~ 4),
-         medical_history = as.numeric(medical_history),
-         ekg = case_when(ekg == "normal" ~ 0,
-                         ekg == "benign" ~ 1,
-                         ekg == "heart block or conduction def" ~ 2,
-                         ekg == "rhythmic disturb & electrolyte ch" ~ 3,
-                         ekg == "old MI" ~ 4,
-                         ekg == "recent MI" ~ 5,
-                         ekg == "rhythmic disturb & electrolyte ch" ~ 6,
-                         ekg == "heart strain" ~ 7),
-         bone_metastases = as.numeric(bone_metastases),
-         treatment = case_when(treatment == "placebo" ~ 0,
-                               treatment == "estrogen" ~ 1)
-         )
-  
-```
-
-Similarly to the example available at https://r4bds.github.io/lab06.html we need a long version of the data where current variable is stored as an entry.
-
-```{r}
-df_long <- df_num |>
-  select(c(patient_no,stage, age, weight, follow_up_months,
-                        sys_blood_pressure, dia_blood_pressure,
-                        serum_hemoglobin, serum_prostatic_acid_phosphatase,
-                        combined_index, size_of_primary_tumor, is_alive, performance, medical_history,ekg, bone_metastases, treatment, dosage)) |> 
-  pivot_longer(cols = c(stage, age, weight, follow_up_months,
-                        sys_blood_pressure, dia_blood_pressure,
-                        serum_hemoglobin, serum_prostatic_acid_phosphatase,
-                        combined_index, is_alive, performance, medical_history,ekg, bone_metastases, treatment, dosage),
-               names_to = "variable",
-               values_to = "value")
-print(df_long |> head(5))
-```
-
-```{r}
-df_long_nested <- df_long |>
-  group_by(variable) |>
-  nest()
-df_long_nested |> head(10) |> print() #quick check
-```
-
-### Save this data
-This data is saved as .Rdata to ensure that types are carried over
-```{r}
-save(df_long_nested, df_num, file = "../data/04_data_for_modelling.Rdata")
-```
-
-
-
-
-
-
