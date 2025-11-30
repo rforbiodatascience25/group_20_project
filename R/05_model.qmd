@@ -12,70 +12,13 @@ source("99_proj_func.R") # custom functions and theme
 ```
 
 ## Load data
-
+We load the data that was prepared for modelling:
 ```{r}
-#| message: false
-df <- read_tsv("../data/02_dat_tidy.tsv.gz") |> tibble()
+load("../data/04_data_for_modelling.Rdata")
 ```
 
-```{r}
-df |> slice_sample(n = 30) |> print()
-```
-
-## Preparing data for modelling
-
-Modelling tumor size vs other factors may pose an interesting investigation and see which factors may be important for tumor development. We need to first conert the columns that are not already numeric to a numeric representation (\*\*\*\*or ordered factors possibly?). This can be done in a number of ways but to keep it similar we choose that the higher the number the worse for the potion. Eg normal activity gets low and stuck in bed gets high.
-
-```{r}
-df_num <- df |>
-  mutate(is_alive = case_when(is_alive == "alive" ~ 0,
-                              is_alive == "dead" ~ 1),
-         performance = case_when(performance == "normal activity" ~ 0,
-                                 performance == "in bed < 50% daytime" ~ 1,
-                                 performance == "in bed > 50% daytime" ~ 2,
-                                 performance == "confined to bed" ~ 4),
-         medical_history = as.numeric(medical_history),
-         ekg = case_when(ekg == "normal" ~ 0,
-                         ekg == "benign" ~ 1,
-                         ekg == "heart block or conduction def" ~ 2,
-                         ekg == "rhythmic disturb & electrolyte ch" ~ 3,
-                         ekg == "old MI" ~ 4,
-                         ekg == "recent MI" ~ 5,
-                         ekg == "rhythmic disturb & electrolyte ch" ~ 6,
-                         ekg == "heart strain" ~ 7),
-         bone_metastases = as.numeric(bone_metastases),
-         treatment = case_when(treatment == "placebo" ~ 0,
-                               treatment == "estrogen" ~ 1)
-         )
-  
-```
-
-Similarly to the example available at https://r4bds.github.io/lab06.html we need a long version of the data where current variable is stored as an entry.
-
-```{r}
-df_long <- df_num |>
-  select(c(patient_no,stage, age, weight, follow_up_months,
-                        sys_blood_pressure, dia_blood_pressure,
-                        serum_hemoglobin, serum_prostatic_acid_phosphatase,
-                        combined_index, size_of_primary_tumor, is_alive, performance, medical_history,ekg, bone_metastases, treatment, dosage)) |> 
-  pivot_longer(cols = c(stage, age, weight, follow_up_months,
-                        sys_blood_pressure, dia_blood_pressure,
-                        serum_hemoglobin, serum_prostatic_acid_phosphatase,
-                        combined_index, is_alive, performance, medical_history,ekg, bone_metastases, treatment, dosage),
-               names_to = "variable",
-               values_to = "value")
-print(df_long |> head(5))
-```
-
-```{r}
-df_long_nested <- df_long |>
-  group_by(variable) |>
-  nest()
-df_long_nested |> head(10) |> print() #quick check
-```
 
 ## Modelling tumor size as a function of other factors
-
 ```{r}
 df_long_nested_model <- df_long_nested |>
   mutate(model_object = map(data,
