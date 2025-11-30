@@ -13,22 +13,29 @@ format:
 
 ## Introduction {background-image=background.png}
 
-:::: {.columns}
-:::: {.column}
+ - Aim:
+ This analysis aims to determine whether the course of prostate cancer can be correlated with any of the observed variables
+ 
+ **Overview**
+ 
+- Dataset
+- Materials and methods
+  - Data tidying
+  - Survival analysis
+  - PCA
 
-### Dataset
+## Dataset {background-image=background.png}
+::: {.layout-ncol}
+::: {.column}
 - Prostate dataset from this data base : https://hbiostat.org/data/
 - The dataset focuses on patients with prostate cancer
+:::
+::: {.column}
+![](dataset.png){width=100%}
+:::
+:::
 
-::::
-:::: {.column}
-
-put the dataset image like this : ![](dataset.png){width=80%}
-
-::::
-::::
-
-## Materials and methods {background-image=background.png}
+## Materials and methods {background-image=background2.png}
 
 ### Data preparation 
 - We converted the raw file into a **tidy dataset**:
@@ -36,13 +43,27 @@ put the dataset image like this : ![](dataset.png){width=80%}
   - creating survival event variables (0 and 1)
   - removing ap outlines (exceeding 100 to avoid distorsion)
 
-### Survival analysis 
+## Materials and methods {background-image=background2.png}
+### PCA analysis
 
-## Results and Discussion {background-image=background.png}
+## Materials and methods {background-image=background2.png}
+### Modelling
+![](../results/figures/forest_plot.svg){width=100%}
 
+## Materials and methods {background-image=background2.png}
+### Survival analysis
+
+
+
+## Results {background-image=background3.png}
 ### PCA 
 - didn't work : put the plot 
 
+## Results {background-image=background3.png}
+### Modelling 
+- didn't work : put the plot 
+
+## Results {background-image=background3.png}
 ### Survival analysis 
 - correlation plot (lower number so every variables are independants = that's why we can't do a PCA)
 - survival curve
@@ -50,5 +71,5 @@ put the dataset image like this : ![](dataset.png){width=80%}
 
 to put image : ![](plot name){fig-align=center}
 
-## Conclusion 
+## Discussion {background-image=background4.png}
 
