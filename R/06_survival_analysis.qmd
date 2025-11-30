@@ -41,27 +41,30 @@ Before conducting survival analyses, it is essential to evaluate whether the tre
 ```{r}
 full_df <- full_df |>
   mutate(
-    treatment_group = factor(treatment_group)
+    treatment_detail = factor(treatment_detail, 
+                              levels = c("Placebo", 
+                                         "0.2mg Estrogen", 
+                                         "1.0mg Estrogen", 
+                                         "5.0mg Estrogen"))
   )
-
-table(full_df$treatment_group)
+table(full_df$treatment_detail)
 ```
 
 ## 2.1 Summary statistics by treatment group
 
 ```{r}
 full_df |>
-group_by(treatment_group) |>
-summarise(
-n = n(),
-age_mean = mean(age, na.rm = TRUE),
-weight_mean = mean(weight, na.rm = TRUE),
-hemoglobin_mean = mean(serum_hemoglobin, na.rm = TRUE),
-ap_mean = mean(ap, na.rm = TRUE),
-tumor_size_mean = mean(size_of_primary_tumor, na.rm = TRUE),
-bm_rate = mean(bone_metastases, na.rm = TRUE),
-medical_history_rate = mean(medical_history, na.rm = TRUE)
-)
+group_by(treatment_detail) |>
+  summarise(
+    n = n(),
+    age_mean = mean(age, na.rm = TRUE),
+    weight_mean = mean(weight, na.rm = TRUE),
+    hemoglobin_mean = mean(serum_hemoglobin, na.rm = TRUE),
+    ap_mean = mean(ap, na.rm = TRUE),
+    tumor_size_mean = mean(size_of_primary_tumor, na.rm = TRUE),
+    bm_rate = mean(bone_metastases, na.rm = TRUE),
+    medical_history_rate = mean(medical_history, na.rm = TRUE)
+    )
 ```
 
 These variables were selected because they represent important aspects of patient status: physiological measures, tumor burden indicators, and metastasis. These factors are potential confounders of survival and therefore must be examined at baseline.
@@ -121,11 +124,11 @@ AP levels are expected to be substantially higher in patients with bone metastas
 ```{r}
 ggplot(full_df, aes(x = stage, y = size_of_primary_tumor)) +
 geom_boxplot() +
-labs(
-x = "Clinical stage",
-y = "Size of primary tumor",
-title = "Tumor size across clinical stages"
-)
+  labs(
+    x = "Clinical stage",
+    y = "Size of primary tumor",
+    title = "Tumor size across clinical stages"
+    )
 ```
 
 <<<<<<< HEAD
@@ -198,23 +201,23 @@ surv_obj <- Surv(time = full_df$follow_up_months,
 Next, we estimate the Kaplan–Meier curves for the two treatment groups: estrogen (any dose) vs placebo.
 
 ```{r}
-fit_rx <- survfit(surv_obj ~ treatment_group, data = full_df)
+fit_rx <- survfit(surv_obj ~ treatment_detail, data = full_df)
 
 plot(
-fit_rx,
-xlab = "Follow-up time (months)",
-ylab = "Survival probability",
-main = "Kaplan–Meier Survival Curves by Treatment Group",
-col = c("blue", "red"),
-lwd = 2
-)
+  fit_rx,
+  xlab = "Follow-up time (months)",
+  ylab = "Survival probability",
+  main = "Survival Curves by Estrogen Dosage",
+  col = c("blue", "red","yellow","green"),
+  lwd = 2
+  )
 
 legend(
-"topright",
-legend = levels(full_df$treatment_group),
-col = c("blue", "red"),
-lwd = 2
-)
+  "topright",
+  legend = levels(full_df$treatment_detail),
+  col = c("blue", "red","yellow","green"),
+  lwd = 2
+  )
 
 ```
 
@@ -231,11 +234,9 @@ summary(fit_rx)
 A log-rank test formally assesses whether the survival curves of the two treatment groups differ.
 
 ```{r}
-logrank_test <- survdiff(surv_obj ~ treatment_group, data = full_df)
+logrank_test <- survdiff(surv_obj ~ treatment_detail, data = full_df)
 logrank_test
 ```
-
-<<<<<<< HEAD
 A p-value \< 0.05 indicates statistically significant differences in survival between the treatment groups. The direction of effect (better or worse survival under estrogen) can be inferred by comparing the Kaplan–Meier curves or byreviewing hazard ratios in later Cox modeling.
 
 # 5. Cox proportional hazards modeling
@@ -249,7 +250,7 @@ We first fit univariate Cox models for key predictors identified in Sections 2 a
 A p-value \< 0.05 indicates statistically significant differences in survival between the treatment groups. The direction of effect (better or worse survival under estrogen) can be inferred by comparing the Kaplan–Meier curves or byreviewing hazard ratios in later Cox modeling. \# 5. Cox proportional hazards modeling Kaplan–Meier curves (Section 4) provide an unadjusted comparison of survival between the treatment groups, but they do not account for baseline imbalances in disease severity or physiological status. To estimate treatment effects while controlling for potential confounders, we apply Cox proportional hazards models. We consider both univariate and multivariable Cox regressions to evaluate the association between clinical variables and mortality risk. \## 5.1 Univariate Cox models We first fit univariate Cox models for key predictors identified in Sections 2 and 3, including tumor burden (AP, tumor size, bone metastases), physiological status (hemoglobin, age), and clinical stage.
 
 ```{r}
-cox_vars <- c("treatment_group",
+cox_vars <- c("treatment_detail",
               "age",
               "serum_hemoglobin",
               "ap",
@@ -278,16 +279,16 @@ These results report hazard ratios (HR), confidence intervals, and p-values. Pre
 
 ```{r}
 cox_multi <- coxph(
-Surv(follow_up_months, event) ~
-treatment_group +
-age +
-serum_hemoglobin +
-ap +
-size_of_primary_tumor +
-bone_metastases +
-stage,
-data = full_df
-)
+  Surv(follow_up_months, event) ~
+    treatment_detail +
+    age +
+    serum_hemoglobin +
+    ap +
+    size_of_primary_tumor +
+    bone_metastases +
+    stage,
+  data = full_df
+  )
 
 summary(cox_multi)
 ```

@@ -54,8 +54,34 @@ df_aug <- full_df |>
     
     follow_up_months = as.numeric(follow_up_months),
     
-    treatment_group = if_else(str_detect(treatment, "estrogen"), "estrogen", "placebo")
+    dosage = as.numeric(str_extract(treatment, "\\d+\\.\\d+")),
+    
+    # set placebo dosage to 0
+    dosage = replace_na(dosage, 0),
+    
+    # create treatment group
+    treatment = case_when(
+      str_detect(treatment, "estrogen") ~ "estrogen",
+      str_detect(treatment, "placebo") ~ "placebo",
+      TRUE ~ NA_character_
+    ),
+    
+    # create treatment detail
+    treatment_detail = case_when(
+      treatment == "placebo" ~ "Placebo",
+      treatment == "estrogen" & dosage == 0.2 ~ "0.2mg Estrogen",
+      treatment == "estrogen" & dosage == 1.0 ~ "1.0mg Estrogen",
+      treatment == "estrogen" & dosage == 5.0 ~ "5.0mg Estrogen",
+      TRUE ~ NA_character_
+    ),
+    treatment_detail = factor(treatment_detail, 
+                              levels = c("Placebo", 
+                                         "0.2mg Estrogen", 
+                                         "1.0mg Estrogen", 
+                                         "5.0mg Estrogen")),
   )
+# check treatment detail
+count(df_aug, treatment_detail)
 
 # add MAP
 df_aug <- df_aug |>
