@@ -6,9 +6,11 @@ format: html
 ## Load library
 
 ```{r}
-library(readr)
-library(dplyr)
-library(factoextra)
+#| message: false
+library("readr")
+library("dplyr")
+library("factoextra")
+source("99_proj_func.R") # custom functions and theme
 ```
 
 ## Load data
