@@ -22,6 +22,7 @@ tidy_file <- "03_dat_aug.tsv.gz"
 
 full_df <- read_tsv("../data/03_dat_aug.tsv.gz")
 
+# check the data we loaded
 glimpse(full_df)
 ```
 
@@ -106,30 +107,38 @@ The descriptive file 04_describe.qmd examined individual variables such as serum
 Serum AP is commonly elevated in advanced prostate cancer and is often used as a surrogate marker for metastatic activity. We compare AP levels between patients with and without bone metastasis.
 
 ```{r}
-ggplot(full_df, aes(x = factor(bone_metastases),
-                    y = ap)) +
+ggplot(full_df, aes(x = factor(bone_metastases), y = ap)) +
   geom_boxplot() +
+  scale_y_log10() +
   labs(
-    x = "Bone metastases (FALSE = no, TRUE = yes)",
-    y = "Serum acid phosphatase (AP)",
-    title = "AP levels in patients with and without bone metastases"
+    x = "Bone metastases",
+    y = "AP (log scale)",
+    title = "AP levels (log scale) by bone metastases status"
   )
 ```
 
-AP levels are expected to be substantially higher in patients with bone metastases, reinforcing AP as a marker of advanced disease. This observation is consistent with the extreme AP values identified earlier in 04_describe.qmd.
+W额can see thst AP levels are expected to be substantially higher in patients with bone metastases, reinforcing AP as a marker of advanced disease. This observation is consistent with the extreme AP values identified earlier in 04_describe.
 
 ## 3.2 Tumor size across clinical stage
 
 We examine whether tumor size increases with clinical stage, as more advanced stages are typically associated with larger or more invasive tumors.
 
 ```{r}
+
+full_df <- full_df %>% mutate(stage = factor(stage, levels = c(3,4)))
+
 ggplot(full_df, aes(x = stage, y = size_of_primary_tumor)) +
-geom_boxplot() +
+  geom_boxplot(outlier.shape = NA) +      # hide the outliners
+  geom_jitter(width = 0.15, alpha = 0.6) + 
+  coord_cartesian(ylim = c(0, 40)) +      # focus on the main part
   labs(
     x = "Clinical stage",
     y = "Size of primary tumor",
     title = "Tumor size across clinical stages"
-    )
+  ) +
+  theme_minimal()
+
+
 ```
 
 A monotonic increase in tumor size across stages suggests that tumor size is a useful measure of disease progression and may influence survival risk.
@@ -211,7 +220,8 @@ legend(
   "topright",
   legend = levels(full_df$treatment_detail),
   col = c("blue", "red","yellow","green"),
-  lwd = 2
+  lwd = 2,
+  cex = 0.8
   )
 
 
@@ -251,19 +261,65 @@ cox_vars <- c("treatment_detail",
               "ap",
               "size_of_primary_tumor",
               "bone_metastases",
-              "stage")
+              "stage",
+              "MAP")
 
-uni_results <- lapply(cox_vars, function(v) {
+# merge the results
+uni_df <- map_df(cox_vars, function(v) {
   formula <- as.formula(paste0("Surv(follow_up_months, event) ~ ", v))
   model <- coxph(formula, data = full_df)
-  tidy(model)
+  tidy(model, exponentiate = TRUE, conf.int = TRUE) %>%
+    mutate(variable = v)
 })
 
-names(uni_results) <- cox_vars
-uni_results
+# rename
+uni_df <- uni_df |>
+  mutate(
+    Variable = case_when(
+      variable == "treatment_detail" & grepl("0\\.2mg", term) ~ "Estrogen 0.2mg (vs placebo)",
+      variable == "treatment_detail" & grepl("1\\.0mg", term) ~ "Estrogen 1.0mg (vs placebo)",
+      variable == "treatment_detail" & grepl("5\\.0mg", term) ~ "Estrogen 5.0mg (vs placebo)",
+      variable == "stage" & term == "stage4" ~ "Stage IV (vs Stage III)",
+      variable == "bone_metastases" ~ "Bone metastasis (yes vs no)",
+      variable == "serum_hemoglobin" ~ "Hemoglobin",
+      variable == "size_of_primary_tumor" ~ "Tumor size",
+      variable == "ap" ~ "AP",
+      variable == "MAP" ~ "MAP",
+      variable == "age" ~ "Age",
+      TRUE ~ term
+    ),
+    HR = estimate,
+    lower = conf.low,
+    upper = conf.high,
+    p_sig = p.value < 0.05,
+    HR_color = ifelse(HR > 1, "orange", "blue"),
+    label_color = ifelse(p_sig, "red", "black"),
+    label_face = ifelse(p_sig, "bold", "plain")
+  ) |>
+  arrange(HR) |>
+  mutate(Variable = factor(Variable, levels = Variable))
+
+# draw forestplot
+ggplot(uni_df, aes(x = HR, y = Variable)) +
+  geom_point(aes(color = HR_color), size = 3) +
+  geom_errorbarh(aes(xmin = lower, xmax = upper, color = HR_color), height = 0.25) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  scale_color_identity() +
+  scale_x_log10() +
+  labs(
+    title = "Univariate Cox Model",
+    x = "Hazard Ratio (log scale)",
+    y = ""
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.y = element_text(size = 12,
+                               color = uni_df$label_color,
+                               face = uni_df$label_face)
+  )
 ```
 
-These results report hazard ratios (HR), confidence intervals, and p-values. Predictors with statistically significant are associated with increased mortality risk.
+In univariate Cox analyses, several variables demonstrated significant associations with mortality. Age, AP, tumor size, bone metastasis, and clinical stage were all associated with increased hazard of death, consistent with known clinical behavior of advanced prostate cancer. Hemoglobin was protective. Among treatment arms, only 1.0mg estrogen showed a significantly reduced hazard compared with placebo. MAP showed no significant association with survival.
 
 ## 5.2 Multivariable Cox model
 
@@ -278,18 +334,71 @@ cox_multi <- coxph(
     ap +
     size_of_primary_tumor +
     bone_metastases +
-    stage,
+    stage +
+    MAP,
   data = full_df
   )
 
-summary(cox_multi)
+# clean the result
+multi_df <- tidy(cox_multi, exponentiate = TRUE, conf.int = TRUE) %>%
+  mutate(
+    HR = estimate,
+    lower = conf.low,
+    upper = conf.high,
+    Variable = term,
+    p_sig = p.value < 0.05,    # whether it's significant
+    HR_color = ifelse(HR > 1, "orange", "blue"),   
+    label_color = ifelse(p_sig, "red", "black"),   
+    label_face = ifelse(p_sig, "bold", "plain")    
+  ) %>%
+  # rename
+  mutate(
+    Variable = case_when(
+      grepl("0\\.2mg", Variable) ~ "Estrogen 0.2mg (vs placebo)",
+      grepl("1\\.0mg", Variable) ~ "Estrogen 1.0mg (vs placebo)",
+      grepl("5\\.0mg", Variable) ~ "Estrogen 5.0mg (vs placebo)",
+      Variable == "stage4" ~ "Stage IV (vs Stage III)",
+      Variable == "bone_metastasesTRUE" ~ "Bone metastasis (yes vs no)",
+      Variable == "serum_hemoglobin" ~ "Hemoglobin",
+      Variable == "size_of_primary_tumor" ~ "Tumor size",
+      Variable == "ap" ~ "AP",
+      Variable == "MAP" ~ "MAP",
+      Variable == "age" ~ "Age",
+      TRUE ~ Variable
+    )
+  ) |>
+  arrange(HR) |>                   # order
+  mutate(Variable = factor(Variable, levels = Variable))
+
+# draw forestplot
+ggplot(multi_df, aes(x = HR, y = Variable)) +
+  geom_point(aes(color = HR_color), size = 3) +
+  geom_errorbarh(aes(xmin = lower, xmax = upper, color = HR_color),
+                 height = 0.25) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  scale_color_identity() +    
+  scale_x_log10() +
+  labs(
+    title = "Multivariable Cox Model",
+    x = "Hazard Ratio (log scale)",
+    y = ""
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.y = element_text(size = 12,
+                               color = multi_df$label_color,
+                               face = multi_df$label_face),
+    plot.title = element_text(size = 18, face = "bold"),
+    panel.grid.major.y = element_blank()
+  )
+
 ```
 
-The multivariable Cox model provides adjusted hazard ratios. Interpretation of the treatment effect in this context accounts for baseline differences in tumor burden (AP, tumor size), metastasis, physiological measurements, and stage.
+he multivariable Cox proportional hazards model identified several independent predictors of mortality. Bone metastasis, tumor size, AP, and age were strong and statistically significant risk factors, while hemoglobin and the 1.0mg estrogen treatment remained significant protective factors. MAP had no independent prognostic value. Clinical stage lost significance after adjustment, likely due to the stronger explanatory power of AP and metastatic status. These findings highlight that tumor burden biomarkers are the dominant determinants of survival, and 1.0mg estrogen demonstrated a robust and independent therapeutic benefit
 
 ## 5.3 Interpretation
 
-The multivariable model allows us to draw refined conclusions about predictors of mortality.
+The multivariable model allows us to draw refined conclusions about predictors of mortality(Bone metastasis, tumor size, AP, and age).
 
 # 6. Outlier and high-risk patient exploration
 
