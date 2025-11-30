@@ -122,7 +122,7 @@ The forest plot shows the confidence interval of the modelled slope for all vari
 forest_plot <- df_long_nested_model |> 
   filter(p_adjusted < 0.05) |> 
   ggplot(mapping = aes(x = estimate,
-                       y = fct_reorder(variable, estimate),#sort by the skope 
+                       y = fct_reorder(variable, estimate),#sort by the slope 
                        xmin = conf.low,
                        xmax = conf.high)) +
   geom_errorbar(orientation = "y") +
@@ -135,9 +135,7 @@ forest_plot <- df_long_nested_model |>
     title = "Variables with significant impact on tumor size"
   ) +
   best_theme()
-
-  ggsave("../results/figures/forest_plot.svg", forest_plot)
-  print(forest_plot) #cursed
+save_and_show("forest_plot")
 ```
 
 ### Multivariate analysis
