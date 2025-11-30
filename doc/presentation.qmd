@@ -12,6 +12,8 @@ format:
 ---
 
 ## Introduction {background-image=background.png}
+::: {.layout-ncol}
+::: {.column}
  - Aim:
  This analysis aims to determine whether the course of prostate cancer can be correlated with any of the observed variables
 
@@ -19,14 +21,11 @@ format:
 ### Dataset
 - Prostate dataset from this data base : https://hbiostat.org/data/
 - The dataset focuses on patients with prostate cancer
-
-::::
-:::: {.column}
-
-put the dataset image like this : ![](dataset.png){width=80%}
-
-::::
-::::
+:::
+::: {.column}
+![](dataset.png){width=100%}
+:::
+:::
 
 ## Materials and methods {background-image=background.png}
 
