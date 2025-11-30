@@ -6,17 +6,18 @@ format: html
 ## Load library
 
 ```{r}
+#| message: false
 library(tidyverse)
+library(readr)
 ```
 
-## Load data
+## Load tidy data
 
 ```{r}
 data_dir <- "data/"
 tidy_file <- "02_dat_tidy.tsv.gz"
 
 full_df <- read_tsv("../data/02_dat_tidy.tsv.gz")
-glimpse(full_df)
 ```
 
 ## Augment data
@@ -24,7 +25,47 @@ glimpse(full_df)
 MAP (Mean Arterial Pressure) is the average blood pressure in a person’s arteries during one cardiac cycle (one heartbeat).
 
 ```{r}
-augment_data<- full_df |>
-  mutate(MPA = (sys_blood_pressure+ 2 *dia_blood_pressure) / 3)
-glimpse(augment_data)       
+#Add new variables
+df_aug <- full_df |>
+  mutate(
+    # variables for modeliing 
+    is_alive_num = case_when(is_alive == "alive" ~ 0,
+                             is_alive == "dead" ~ 1),
+    
+    performance_score = case_when(performance == "normal activity" ~ 0,
+                                  performance == "in bed < 50% daytime" ~ 1,
+                                  performance == "in bed > 50% daytime" ~ 2,
+                                  performance == "confined to bed" ~ 4),
+    
+    ekg_code = case_when(ekg == "normal" ~ 0,
+                         ekg == "benign" ~ 1,
+                         ekg == "heart block or conduction def" ~ 2,
+                         ekg == "rhythmic disturb & electrolyte ch" ~ 3,
+                         ekg == "old MI" ~ 4,
+                         ekg == "recent MI" ~ 5,
+                         ekg == "rhythmic disturb & electrolyte ch" ~ 6,
+                         ekg == "heart strain" ~ 7),
+                         
+    bone_metastases_num = as.numeric(bone_metastases),
+    medical_history_num = as.numeric(medical_history),
+    
+    # variables for survival_analysis
+    event = if_else(is_alive == "dead", 1, 0),
+    
+    follow_up_months = as.numeric(follow_up_months),
+    
+    treatment_group = if_else(str_detect(treatment, "estrogen"), "estrogen", "placebo")
+  )
+
+# add MAP
+df_aug <- df_aug |>
+  mutate(MAP = (sys_blood_pressure+ 2 *dia_blood_pressure) / 3)
+
+# checking the df_aug
+glimpse(df_aug)
+```
+
+## Save augmented data
+```{r}
+write_tsv(df_aug, "../data/03_dat_aug.tsv.gz")
 ```
