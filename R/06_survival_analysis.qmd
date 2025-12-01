@@ -119,7 +119,7 @@ km_res <- km_fit(
 )
 
 # draw survival curve
-km_res |>
+(km_res |>
   ggplot(aes(x = time, y = surv, color = group)) +
   geom_step(size = 1) +
   labs(
@@ -129,9 +129,7 @@ km_res |>
   ) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5) # keep titles in the middle
-  )
-
-save_and_show("surv_curv by treatment")
+  )) |> save_and_show("surv_curv by treatment")
 ```
 
 The Kaplan–Meier curves illustrate how survival probabilities decline over time for patients receiving estrogen therapy versus placebo. The 1.0mg Estrogen group have a significantly larger survival probability than the other, which provides a brief insight that this can be considered as a effective treatment.
@@ -203,7 +201,7 @@ uni_df <- uni_df |>
   mutate(Variable = factor(Variable, levels = Variable))
 
 # draw forestplot
-uni_df |>
+(uni_df |>
   ggplot(aes(x = HR, y = Variable)) +
   geom_point(aes(color = HR_color), size = 3) +
   geom_errorbarh(aes(xmin = lower, xmax = upper, color = HR_color), height = 0.25) +
@@ -220,9 +218,7 @@ uni_df |>
     axis.text.y = element_text(size = 12,
                                color = uni_df$label_color,
                                face = uni_df$label_face)
-  )
-
-save_and_show("Univariate_cox_model")
+  )) |> save_and_show("Univariate_cox_model")
 ```
 
 In the forest plot, variables are marked with HR \> 1 orange and those with HR \< 1 blue. The variables with significant difference are shown red and emphasis their names. The univariate Cox analyses shows that Age, AP, tumor size, bone metastasis, and clinical stage were all associated with increased hazard of death, consistent with known clinical behavior of advanced prostate cancer. Hemoglobin was protective. Among treatment arms, only 1.0mg estrogen showed a significantly reduced hazard compared with placebo. MAP showed no significant association with survival.
@@ -279,7 +275,7 @@ multi_df <- tidy(cox_multi, exponentiate = TRUE, conf.int = TRUE) |>
   mutate(Variable = factor(Variable, levels = Variable))
 
 # draw forestplot
-multi_df |>
+(multi_df |>
   ggplot(aes(x = HR, y = Variable)) +
   geom_point(aes(color = HR_color), size = 3) +
   geom_errorbarh(aes(xmin = lower, xmax = upper, color = HR_color),
@@ -299,8 +295,7 @@ multi_df |>
                                face = multi_df$label_face),
     plot.title = element_text(size = 18, face = "bold"),
     panel.grid.major.y = element_blank()
-  )
-save_and_show("Multivarible_cox_model")
+  )) |> save_and_show("Multivarible_cox_model")
 ```
 
 The forest plot is similar to the one shown in the univariate section. Indicative in the forest plot bone metastasis, tumor size, AP, and age were strong and statistically significant risk factors, while hemoglobin and the 1.0mg estrogen treatment remained significant protective factors. MAP had no independent prognostic value. Clinical stage lost significance after adjustment, likely due to the stronger explanatory power of AP and metastatic status. These findings indicate that tumor burden biomarkers are the dominant determinants of survival, and 1.0mg estrogen demonstrated a robust and independent therapeutic benefit.
@@ -377,7 +372,7 @@ km_ap <- km_fit(
 
 # draw surv curve
 
-km_ap |>
+(km_ap |>
   ggplot(aes(x = time, y = surv, color = group)) +
   geom_step(size = 1.2) +
   labs(
@@ -395,7 +390,7 @@ km_ap |>
   theme(
     plot.title = element_text(size = 14, face = "bold"),
     legend.title = element_blank()
-  )
+  )) |> save_and_show("high_ap_comparison")
 ```
 
 Patients with extremely elevated AP typically show sharply reduced survival, highlighting AP as a powerful prognostic biomarker.
