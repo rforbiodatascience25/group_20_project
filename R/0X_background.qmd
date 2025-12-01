@@ -9,4 +9,4 @@ Prostate cancer is one of the most common cancer types among men, and approximat
 
 ## Aim
 
-This project aims to investigate a correlation between Hemoglobin levels and Prostatic acid phosphatase in patients, with the goal to determine if the biomarkers can be used to predict prostate cancer. By analyzing patient date and evaluating it, this project seeks to make a predictive statistical model to support determination of patients might having prostate cancer.
+This project aims to investigate the clinical data in data set. This includes correlation of markers; hemoglobin and prostatic acid phosphatase in patients, with the goal to determine if the biomarkers are a good estimate when predicting or evaluating prostate cancer. Along with this the effect of hormone treatment will also be investigated.
