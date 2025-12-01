@@ -5,6 +5,7 @@ editor: visual
 ---
 
 ```{r}
+#| message: false
 library(tidyverse)
 library(survival)
 library(ggplot2)
@@ -28,18 +29,17 @@ glimpse(full_df)
 
 ## 1.1 Removing ap outlines
 
-The raw dataset contains several implausible AP values (e.g.999), which likely represent data entry codes or errors. As recommended by the data source, we remove observations with AP values exceeding 100 to avoid distortion in downstream modeling and correlation analyses.
+The raw dataset contains several implausible AP values (e.g.999). As recommended by the data source, we remove observations with AP values exceeding 100 for better analysis. We use summary to check the results.
 
 ```{r}
-full_df <- full_df %>%
+full_df <- full_df |>
   filter(ap <= 100)
-
 summary(full_df$ap)
 ```
 
 # 2.Baseline comparison between treatment groups
 
-Before conducting survival analyses, it is essential to evaluate whether the treatment groups differ at baseline. The original treatment variable contains four treatment arms ("0.2 mg estrogen", "1.0 mg estrogen", "5.0 mg estrogen", "placebo"). For comparisons, we create a combined variable representing any treatment details.
+Before conducting survival analyses, it is essential to evaluate whether the treatment groups differ at baseline. The original treatment variable contains four treatment arms ("0.2 mg estrogen", "1.0 mg estrogen", "5.0 mg estrogen", "placebo"). For comparisons, we create a combined variable representing any treatment details then print the table.
 
 ```{r}
 full_df <- full_df |>
@@ -59,7 +59,7 @@ Here we take a closer look at several important variables's statistic results.
 
 ```{r}
 full_df |>
-group_by(treatment_detail) |>
+  group_by(treatment_detail) |>
   summarise(
     n = n(),
     age_mean = mean(age, na.rm = TRUE),
@@ -72,11 +72,11 @@ group_by(treatment_detail) |>
     )
 ```
 
-These variables were selected because they represent important aspects of patient status: physiological measures, tumor burden indicators, and metastasis. These factors are potential confounders of survival and therefore must be examined at baseline.
+These variables' means give us a brief understanding of patient's status in different treatment group.
 
 ## 2.2 Hypothesis tests for group differences
 
-To ensure that patients in different treatment groups have similar health condition. We did statistic tests to see if the sample's difference is significant. Continuous variables were compared using ANOVA, and categorical variables using chi-square tests.
+To ensure that patients in different treatment groups have similar health condition. We did statistic tests to see if the sample's difference is significant. Continuous variables were compared using ANOVA, and categorical variables using chi-square tests(these functions are from base R).
 
 ```{r}
 # Age
@@ -96,20 +96,20 @@ Significant differences between groups indicate that treatment allocation is not
 
 ## 2.3 Interpretation
 
-Baseline comparisons help establish whether survival differences are attributed to treatment itself or reflect initial imbalances. For example, higher serum AP or greater frequency of bone metastasis in one group would imply greater disease severity at baseline, which may independently explain poorer outcomes. The results above provide context for the survival analyses presented in the following section.
+Baseline comparisons help establish whether survival differences are attributed to treatment itself or reflect initial imbalances. For example, higher serum AP or greater frequency of bone metastasis in one group would imply greater disease severity at baseline, which may independently explain poorer outcomes. The results above provide our data is suitable for the survival analyses presented in the following section.
 
 # 3.Explore relationships between key clinical variables
 
-The descriptive file 04_describe.qmd examined individual variables such as serum prostatic acid phosphatase (AP) and showed the presence of extreme values. In this section, we extend those findings by evaluating clinically meaningful associations between tumor burden indicators, metastatic status, physiological measurements, and disease progression. These exploratory analyses guide which variables should be prioritized in survival and multivariable Cox modeling.
+In this section, we try to find the important varibles by evaluating clinically meaningful associations between tumor burden indicators, metastatic status, physiological measurements, and disease progression. These exploratory analyses guide which variables should be prioritized in survival and multivariable Cox modeling.
 
 ## 3.1 AP levels by bone metastasis status
 
-Serum AP is commonly elevated in advanced prostate cancer and is often used as a surrogate marker for metastatic activity. We compare AP levels between patients with and without bone metastasis.
+Serum AP is commonly elevated in advanced prostate cancer and is often used as a surrogate marker for metastatic activity. We compare AP levels between patients with and without bone metastasis and draw a boxplot to show the result.
 
 ```{r}
 ggplot(full_df, aes(x = factor(bone_metastases), y = ap)) +
   geom_boxplot() +
-  scale_y_log10() +
+  scale_y_log10() + # for better look
   labs(
     x = "Bone metastases",
     y = "AP (log scale)",
@@ -117,11 +117,11 @@ ggplot(full_df, aes(x = factor(bone_metastases), y = ap)) +
   )
 ```
 
-W额can see thst AP levels are expected to be substantially higher in patients with bone metastases, reinforcing AP as a marker of advanced disease. This observation is consistent with the extreme AP values identified earlier in 04_describe.
+We can see that AP levels are expected to be substantially higher in patients with bone metastases, reinforcing AP as a marker of advanced disease. This observation is consistent with the extreme AP values identified earlier in 04_describe.
 
 ## 3.2 Tumor size across clinical stage
 
-We examine whether tumor size increases with clinical stage, as more advanced stages are typically associated with larger or more invasive tumors.
+We examine whether tumor size increases with clinical stage, as more advanced stages are typically associated with larger or more invasive tumors. We draw a boxplot to show the result.
 
 ```{r}
 
@@ -162,36 +162,54 @@ corr_df <- full_df |>
 # Compute raw correlation matrix
 corr_mat <- cor(corr_df, use = "pairwise.complete.obs")
 
-# Print raw matrix to console (not emphasized in the report)
-# corr_mat
 ```
 
 ### Correlation heatmap
 
 ```{r}
-library(ggcorrplot)
+# Convert matrix to long format for ggplot2
+corr_long <- as.data.frame(corr_mat) |>
+  rownames_to_column("Var1") |>
+  pivot_longer(
+    cols = -Var1,
+    names_to = "Var2",
+    values_to = "cor"
+  )
 
-ggcorrplot(
-  corr_mat,
-  hc.order = TRUE,          # hierarchical clustering for clearer structure
-  type = "lower",           # show only lower triangle
-  lab = TRUE,               # display correlation values
-  lab_size = 3,
-  colors = c("#6D9EC1", "white", "#E46726"),  # blue → white → red
-  title = "Correlation matrix of clinical variables",
-  ggtheme = theme_minimal()
-)
+ggplot(corr_long, aes(x = Var2, y = Var1, fill = cor)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = sprintf("%.2f", cor)), size = 3) +
+  scale_fill_gradient2(
+    low = "blue",
+    mid = "white",
+    high = "red",
+    midpoint = 0,
+    limits = c(-1, 1),
+    name = "Correlation"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1), # retate words
+    panel.grid = element_blank() # remove grid lines
+  ) +
+  labs(
+    title = "Correlation Matrix of Selected Variables",
+    x = NULL,
+    y = NULL
+  )
+
 ```
 
 This correlation matrix helps to identify redundant predictors. All the relevances is below 0.8, which indicates the selected variables can be seen as independent and used in our survival analysis.
 
 ## 3.4 Interpretation
 
-These patterns validate clinically meaningful associations: Blood pressure and hemoglobin levels show expected physiological correlations. These relationships justify including AP, bone metastases, stage, and tumor size as covariates in subsequent survival and Cox proportional hazards models.
+These patterns validate clinically meaningful associations: Weight and hemoglobin levels show expected physiological correlations. These relationships justify including AP, bone metastases, stage, and tumor size as covariates in subsequent survival and Cox proportional hazards models.
 
 # 4.Survival analysis
 
 To evaluate whether treatment has an effect on time-to-event outcomes, we perform non-parametric survival analysis using Kaplan–Meier estimators and log-rank tests. The dataset provides follow-up time (`follow_up_months`) and a binary mortality indicator (`event`), which allows construction of survival objects.
+* Some of the analysis(like cox models) was done by the package survive, in those sections we'll pay more attention to data visualization.
 
 ## 4.1 Kaplan–Meier survival curves by treatment group
 
@@ -202,38 +220,32 @@ surv_obj <- Surv(time = full_df$follow_up_months,
                  event = full_df$event)
 ```
 
-Next, we estimate the Kaplan–Meier curves for the four treatment groups: 0.2 mg estrogen vs 1.0mg estrogen vs 5.0mg estrogen vs placebo.
+Next, we estimate the Kaplan–Meier curves for the four treatment groups: 0.2 mg estrogen vs 1.0mg estrogen vs 5.0mg estrogen vs placebo. We wrote function km_fit to calculated the survival possibility at each time point and then draw a step plot to the reletionship of survival possibility and time.
 
 ```{r}
-fit_rx <- survfit(surv_obj ~ treatment_detail, data = full_df)
+# calculate KM
+km_res <- km_fit(
+  data = full_df,
+  time = "follow_up_months",
+  event = "event",
+  group = "treatment_detail"
+)
 
-plot(
-  fit_rx,
-  xlab = "Follow-up time (months)",
-  ylab = "Survival probability",
-  main = "Survival Curves by Estrogen Dosage",
-  col = c("blue", "red","orange","green"),
-  lwd = 2
+# draw survival curve
+ggplot(km_res, aes(x = time, y = surv, color = group)) +
+  geom_step(size = 1) +
+  labs(
+    x = "Follow-up months",
+    y = "Survival probability",
+    title = "Kaplan–Meier Curves"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5) # keep titles in the middle
   )
-
-legend(
-  "topright",
-  legend = levels(full_df$treatment_detail),
-  col = c("blue", "red","orange","green"),
-  lwd = 2,
-  cex = 0.8
-  )
-
 
 ```
 
 The Kaplan–Meier curves illustrate how survival probabilities decline over time for patients receiving estrogen therapy versus placebo. The 1.0mg Estrogen group have a significantly larger survival probability than the other, which provides a brief insight that this can be considered as a effective treatment.
-
-To obtain summary estimates:
-
-```{r}
-summary(fit_rx)
-```
 
 ## 4.2 Log-rank test
 
@@ -244,7 +256,7 @@ logrank_test <- survdiff(surv_obj ~ treatment_detail, data = full_df)
 logrank_test
 ```
 
-The p-value is 0.04 (< 0.05), which indicates statistically significant differences in survival between the treatment groups. The direction of effect (better or worse survival under estrogen) can be inferred by comparing the Kaplan–Meier curves or byreviewing hazard ratios in later Cox modeling.
+The p-value is 0.04 (< 0.05), which indicates statistically significant differences in survival between the treatment groups. The results we get from 4.1 is valid.
 
 # 5. Cox proportional hazards modeling
 
@@ -252,7 +264,7 @@ Kaplan–Meier curves provide an unadjusted comparison of survival between the t
 
 ## 5.1 Univariate Cox models
 
-We first fit univariate Cox models for key predictors identified in Sections 2 and 3, including tumor burden (AP, tumor size, bone metastases), physiological status (hemoglobin, age), and clinical stage.
+We first fit univariate Cox models for key predictors identified in Sections 2 and 3, including tumor burden (AP, tumor size, bone metastases), physiological status (hemoglobin, age, MAP), and clinical stage.
 
 ```{r}
 cox_vars <- c("treatment_detail",
@@ -267,13 +279,13 @@ cox_vars <- c("treatment_detail",
 
 # merge the results
 uni_df <- map_df(cox_vars, function(v) {
-  formula <- as.formula(paste0("Surv(follow_up_months, event) ~ ", v))
+  formula <- as.formula(str_c("Surv(follow_up_months, event) ~ ", v))
   model <- coxph(formula, data = full_df)
-  tidy(model, exponentiate = TRUE, conf.int = TRUE) %>%
+  tidy(model, exponentiate = TRUE, conf.int = TRUE) |>
     mutate(variable = v)
 })
 
-# rename
+# rename for cleanner look
 uni_df <- uni_df |>
   mutate(
     Variable = case_when(
@@ -321,7 +333,7 @@ ggplot(uni_df, aes(x = HR, y = Variable)) +
   )
 ```
 
-In univariate Cox analyses, several variables demonstrated significant associations with mortality. Age, AP, tumor size, bone metastasis, and clinical stage were all associated with increased hazard of death, consistent with known clinical behavior of advanced prostate cancer. Hemoglobin was protective. Among treatment arms, only 1.0mg estrogen showed a significantly reduced hazard compared with placebo. MAP showed no significant association with survival.
+In the forest plot, we marked variables with HR > 1 orange and those with HR < 1 blue. We also show those variables with significant diference red and emphasis their names. The univariate Cox analyses shows that Age, AP, tumor size, bone metastasis, and clinical stage were all associated with increased hazard of death, consistent with known clinical behavior of advanced prostate cancer. Hemoglobin was protective. Among treatment arms, only 1.0mg estrogen showed a significantly reduced hazard compared with placebo. MAP showed no significant association with survival.
 
 ## 5.2 Multivariable Cox model
 
@@ -343,7 +355,7 @@ cox_multi <- coxph(
   )
 
 # clean the result
-multi_df <- tidy(cox_multi, exponentiate = TRUE, conf.int = TRUE) %>%
+multi_df <- tidy(cox_multi, exponentiate = TRUE, conf.int = TRUE) |>
   mutate(
     HR = estimate,
     lower = conf.low,
@@ -353,7 +365,7 @@ multi_df <- tidy(cox_multi, exponentiate = TRUE, conf.int = TRUE) %>%
     HR_color = ifelse(HR > 1, "orange", "blue"),   
     label_color = ifelse(p_sig, "red", "black"),   
     label_face = ifelse(p_sig, "bold", "plain")    
-  ) %>%
+  ) |>
   # rename
   mutate(
     Variable = case_when(
@@ -398,7 +410,7 @@ ggplot(multi_df, aes(x = HR, y = Variable)) +
 
 ```
 
-The multivariable Cox proportional hazards model identified several independent predictors of mortality. Bone metastasis, tumor size, AP, and age were strong and statistically significant risk factors, while hemoglobin and the 1.0mg estrogen treatment remained significant protective factors. MAP had no independent prognostic value. Clinical stage lost significance after adjustment, likely due to the stronger explanatory power of AP and metastatic status. These findings highlight that tumor burden biomarkers are the dominant determinants of survival, and 1.0mg estrogen demonstrated a robust and independent therapeutic benefit.
+The forest plot is similar to the one we used in 5.1. We can see that Bone metastasis, tumor size, AP, and age were strong and statistically significant risk factors, while hemoglobin and the 1.0mg estrogen treatment remained significant protective factors. MAP had no independent prognostic value. Clinical stage lost significance after adjustment, likely due to the stronger explanatory power of AP and metastatic status. These findings indicate that tumor burden biomarkers are the dominant determinants of survival, and 1.0mg estrogen demonstrated a robust and independent therapeutic benefit.
 
 ## 5.3 Interpretation
 
@@ -410,7 +422,7 @@ The descriptive analysis in 04_describe.qmd highlighted the presence of extreme 
 
 ## 6.1 Identifying extreme AP values
 
-We begin by examining the upper tail of the AP distribution.
+We begin by examining the upper tail of the AP distribution(using quantile).
 
 ```{r}
 quantile(full_df$ap, probs = c(0.75, 0.90, 0.95, 0.99), na.rm = TRUE)
@@ -419,24 +431,42 @@ high_ap_threshold <- quantile(full_df$ap, 0.95, na.rm = TRUE)
 high_ap_df <- full_df |> filter(ap >= high_ap_threshold)
 
 nrow(high_ap_df)
-high_ap_df |> select(patient_no, ap, bone_metastases, stage, size_of_primary_tumor)
+high_ap_df |> select(patient_no, ap, bone_metastases, stage,
+                     size_of_primary_tumor)
 ```
 
-The 95th percentile threshold provides a data-driven definition of unusually high AP. Patients above this cutoff are flagged as having severe biochemical evidence of disease activity.
+The 95th percentile threshold provides a definition of unusually high AP. Patients above this cutoff are flagged as having severe biochemical evidence of disease activity.
 
 ## 6.2 AP and bone metastases
 
-Because AP is strongly associated with metastatic spread, we assess how extreme AP values align with bone metastasis status.
+Because AP is strongly associated with metastatic spread, we assess how extreme AP values align with bone metastasis status by counting the bone_metastases in high_ap groups and draw a barplot.
 
 ```{r}
-table(high_ap_df$bone_metastases)
+
+ggplot(high_ap_df, aes(x = bone_metastases)) +
+  geom_bar(fill = "steelblue", alpha = 0.6, width = 0.5) +
+  geom_text(
+    stat = "count",
+    aes(label = ..count..),
+    vjust = 0.5, # in the middle
+    size = 5
+  ) + # show counts
+  labs(
+    x = "Bone metastases",
+    y = "Count",
+    title = "Frequency of Bone Metastases"
+  ) +
+  theme_minimal()+
+  theme(plot.title = element_text(hjust = 0.5) # keep titles in the middle
+  )
+
 ```
 
 A large fraction of high-AP patients exhibiting bone metastasis strengthens the interpretation that AP reflects tumor burden and metastatic progression.
 
 ## 6.3 Survival of high-AP vs non-high-AP patients
 
-To quantify risk, we stratify patients into high-risk (AP above the 95th percentile) and others, and compare survival curves.
+To quantify risk, we stratify patients into high-risk (AP above the 95th percentile) and others, and compare survival curves(optained by using the same km_fit function we used in 4.1).
 
 ```{r}
 full_df <- full_df |>
@@ -445,24 +475,32 @@ full_df <- full_df |>
     ap_risk_group = factor(ap_risk_group)
     )
 
-fit_ap <- survfit(
-  Surv(follow_up_months, event) ~ ap_risk_group, data = full_df
-  )
+km_ap <- km_fit(
+  data = full_df,
+  time_col = "follow_up_months",
+  event_col = "event",
+  group_col = "ap_risk_group"
+)
 
-plot(
-  fit_ap,
-  xlab = "Follow-up time (months)",
-  ylab = "Survival probability",
-  main = "Survival of High-AP vs Normal-AP Patients",
-  col = c("darkred", "darkgreen"),
-  lwd = 2
-  )
+# draw surv curve
 
-legend(
-  "topright",
-  legend = levels(full_df$ap_risk_group),
-  col = c("darkred", "darkgreen"),
-  lwd = 2
+ggplot(km_ap, aes(x = time, y = surv, color = group)) +
+  geom_step(size = 1.2) +
+  labs(
+    x = "Follow-up time (months)",
+    y = "Survival probability",
+    title = "Survival of High-AP vs Normal-AP Patients"
+  ) +
+  scale_color_manual(
+    values = c(
+      "High AP" = "darkred",
+      "Normal AP" = "darkgreen"
+    )
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    legend.title = element_blank()
   )
 ```
 
