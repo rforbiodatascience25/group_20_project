@@ -7,7 +7,7 @@ format:
     footer: "Project-group20"
     slide-number: true
     transition: "fade"
-    fontsize: 20px #we can change 
+    smaller: true #to write smaller the text 
     #title-slide-attributes: 
       #data-background-image: background.png
 ---
