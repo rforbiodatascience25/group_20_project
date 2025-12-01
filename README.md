@@ -10,7 +10,7 @@
 | Qiju Chen                 | s252613    | QJ-ChenR           |
 
 ## Database:
-Prostate dataset from this data base : <https://hbiostat.org/data/>
+Prostate dataset from the Vanderbilt Statistics Databank: <https://hbiostat.org/data/>
 
 ### Meta data
 

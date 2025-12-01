@@ -128,9 +128,3 @@ tidy_tsv_file <- "02_dat_tidy.tsv.gz"
 
 full_df |> write_tsv(file = str_c(data_dir, tidy_tsv_file))
 ```
-
-## Session info
-
-```{r}
-# sessionInfo()
-```

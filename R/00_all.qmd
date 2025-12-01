@@ -3,6 +3,34 @@ title: "00_all"
 format: html
 ---
 
+# Load Data
+
+{{< include 01_load.qmd >}}
+
+# Tidying Data
+
+{{< include 02_tidy.qmd >}}
+
+# Augment Data
+
+{{< include 03_augment.qmd >}}
+
+# Description
+
+{{< include 04_describe.qmd >}}
+
+# Analysis
+
+{{< include 05_model.qmd >}}
+
+# Survial Analysis
+
+{{< include 06_survival_analysis.qmd >}}
+
+# PCA Analysis
+
+{{< include 07_PCA.qmd >}}
+
 ```{r}
 #render all notebooks
 library("quarto")
@@ -29,5 +57,9 @@ file.rename(html_names, file.path("../results", basename(html_names)))
 ```{r}
 #Render the presentation as well
 quarto_render("../doc/presentation.qmd")#presentation shouldnt be moved according to proj description
+```
+```{r}
+# print system info
+sessionInfo()
 ```
 
