@@ -38,3 +38,23 @@ This project aims to investigate the clinical data in data set. This includes co
 # PCA Analysis
 
 {{< include 07_PCA.qmd >}}
+
+
+```{r}
+#render all notebooks
+library("quarto")
+
+qmds <- list.files(pattern = "\\.qmd$")
+qmds <- qmds[qmds != "00_all.qmd"]
+
+for (qmd_document in qmds) {
+  quarto_render(qmd_document, output_format = "html")}
+
+#move them to res dir
+html_names <- sub("\\.qmd$", ".html", qmds)
+file.copy(html_names, "../results/", overwrite = TRUE)
+
+
+
+```
+
