@@ -114,6 +114,8 @@ ggplot(full_df, aes(x = factor(bone_metastases), y = ap)) +
     x = "Bone metastases",
     y = "AP (log scale)",
     title = "AP levels (log scale) by bone metastases status"
+  )+
+  theme(plot.title = element_text(hjust = 0.5) # keep titles in the middle
   )
 ```
 
@@ -125,7 +127,7 @@ We examine whether tumor size increases with clinical stage, as more advanced st
 
 ```{r}
 
-full_df <- full_df %>% mutate(stage = factor(stage, levels = c(3,4)))
+full_df <- full_df |> mutate(stage = factor(stage, levels = c(3,4)))
 
 ggplot(full_df, aes(x = stage, y = size_of_primary_tumor)) +
   geom_boxplot(outlier.shape = NA) +      # hide the outliners
@@ -136,9 +138,9 @@ ggplot(full_df, aes(x = stage, y = size_of_primary_tumor)) +
     y = "Size of primary tumor",
     title = "Tumor size across clinical stages"
   ) +
-  theme_minimal()
-
-
+  theme_minimal()+theme(plot.title = element_text(hjust = 0.5) # keep titles in the middle
+  )
+  
 ```
 
 A monotonic increase in tumor size across stages suggests that tumor size is a useful measure of disease progression and may influence survival risk.
