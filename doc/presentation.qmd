@@ -109,34 +109,42 @@ augment_data <- full_df |>
 ::::: columns
 ::: column
 **Volcano plot**
-
 -   Quick visual identification of the most impactful variables
 -   Shows both effect size and statistical significance
 :::
 
 ::: column
-![](../results/figures/linear_volcano.svg){width="100%"}
+![](../results/figures/linear_volcano.png){width="100%"}
 :::
 :::::
 
 ::::: columns
 ::: column
 **Forest plot**
-
 For all significant variables, we plotted: - Estimates - 95% confidence intervals
 :::
 
 ::: column
-![](../results/figures/forest_plot.svg){width="100%"}
+![](../results/figures/linear_forest_plot.png){width="100%"}
 :::
 :::::
 
-**QQ-plot linear**
+## Results - Preliminary model {background-image="background3.png"}
 
-**QQ-plot log**
+::: columns
+::: column
+**QQ-plot linear**  
+![](../results/figures/linear_qq.png){width=100%}
+:::
+
+::: column
+**QQ-plot log**  
+![](../results/figures/log_qq.png){width=100%}
+:::
+:::
+
 
 ## Results - Survival Analysis {background-image="background3.png"}
-
 ::::: columns
 ::: column
 **survival curve** - 1.0 mg estrogen
