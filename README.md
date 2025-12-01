@@ -12,25 +12,13 @@
 ## Database:
 Prostate dataset from the Vanderbilt Statistics Databank: <https://hbiostat.org/data/>
 
-### Meta data
+## Generated Files
+The following datasets are produced or used during analysis:
 
-This file contains only these variables : patient number, stage, status, age, weight, performance, medical_history, study_date
-
-### Treatment_data
-
-This file contains all other variables not included in meta_data
-
-### Data tidy
-
-This file contains our tidying dataset
-
-### Data augment
-
-This file contains all the data required for the survival analysis
-
-### Data for modelling
-
-This file contains all the data required for modeling
+- **Metadata**: Contains patient info (`patient_number`, `stage`, `status`, `age`, `weight`, `performance`, `medical_history`, `study_date`).
+- **Treatment Data**: Includes treatment-related variables not in metadata. `patient_number`, `rx`, `dtime`, `sbp`, `dnp`, `ekg`, `kg`, `sz`, `sg`, `ap`, `bm`  
+- **Tidy Data**: Cleaned and formatted dataset for analysis.
+- **Data Augmentation**: Two datasets are prepared for survival analysis, one consisting of treatment segmented data and one for linear modeling. 
 
 ## Project description
 ### Background
@@ -40,3 +28,4 @@ Prostate cancer is one of the most common cancer types among men, and approximat
 ### Aim
 
 This project aims to investigate the clinical data in data set. This includes correlation of markers; hemoglobin and prostatic acid phosphatase in patients, with the goal to determine if the biomarkers are a good estimate when predicting or evaluating prostate cancer. Along with this the effect of hormone treatment will also be investigated.
+# group20_project
