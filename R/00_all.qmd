@@ -1,6 +1,8 @@
 ---
 title: "00_all"
-format: html
+format:
+html:
+  embed_resources = TRUE
 ---
 
 # Background
@@ -49,13 +51,22 @@ qmds <- qmds[qmds != "00_all.qmd"] #dont render current notebook i dont know if 
 qmds <- qmds[qmds != "0X_background.qmd"]
 
 for (qmd_document in qmds) {
-  quarto_render(qmd_document, output_format = "html")}
+  quarto_render(qmd_document,
+                output_format = "html",
+                execute_params = list(embed_resources = TRUE))}
 
 #move them to res dir
 html_names <- sub("\\.qmd$", ".html", qmds)
-file.copy(html_names, "../results/", overwrite = TRUE)
 
+#move the files
+if (!dir.exists("../results")){
+  dir.create("../results", recursive = TRUE)}
 
+# move each file
+file.rename(html_names, file.path("../results", basename(html_names)))
+
+```
+```{r}
 
 ```
 

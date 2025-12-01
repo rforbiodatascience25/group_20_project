@@ -1,6 +1,8 @@
 ---
 title: "03_augment"
-format: html
+format:
+  html:
+    self-contained: TRUE
 ---
 
 ## Load library

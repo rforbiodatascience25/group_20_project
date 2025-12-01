@@ -1,6 +1,8 @@
 ---
 title: "PCA"
-format: html
+format:
+  html:
+    self-contained: TRUE
 ---
 
 ## Load library
@@ -50,7 +52,7 @@ summary(data_pca)
 ### Visualization - Scree plot
 
 ```{r}
-fviz_eig(data_pca, addlabels = TRUE)
+fviz_eig(data_pca, addlabels = TRUE) |> 
 save_and_show("PCA_plot")
 ```
 

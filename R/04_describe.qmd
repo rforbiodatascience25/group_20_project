@@ -1,6 +1,8 @@
 ---
 title: "04_describe"
-format: html
+format:
+  html:
+    self-contained: TRUE
 ---
 
 # Load libraries

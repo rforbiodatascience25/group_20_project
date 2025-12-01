@@ -1,7 +1,8 @@
 ---
 title: "06_survival_analysis"
-format: html
-editor: visual
+format:
+  html:
+    self-contained: TRUE
 ---
 
 ```{r}

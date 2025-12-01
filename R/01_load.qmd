@@ -1,6 +1,8 @@
 ---
 title: "01_load"
-format: html
+format:
+  html:
+    self-contained: TRUE
 ---
 
 ```{r}
