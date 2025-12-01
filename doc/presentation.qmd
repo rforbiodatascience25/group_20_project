@@ -103,19 +103,27 @@ For all significant variables, we plotted:
 ### Survival analysis 
 ::: {.layout-ncol}
 ::: {.column}
-**correlation plot**
-- lower number so every variables are independants 
-- shows that wa can't do a PCA
+**survival curve** 
+- explain a bit 
+- 
 :::
 ::: {.column}
-![](../results/figures/correlation_plot.svg){width=100%}
+![](../results/figures/surv_curv by treatment.svg){width=100%}
 ::::
 :::: 
 ## Results {background-image=background3.png}
 ### Survival analysis 
-**survival curve** 
-![](../results/figures/survival_curve_plot.svg){width=100%}
-
+::: {.layout-ncol}
+::: {.column}
+**Cox model**
+![](../results/figures/Univariate_cox_model.svg){width=100%}
+:::
+::: {.column}
+![](../results/figures/Multivariable_cox_model.svg){width=100%}
+::::
+- Significant risk factor : BM, tumor size, AP and age 
+- Significant protective factor : hemoglobine and 1.0mg estrogen 
+:::: 
 ## Results {background-image=background3.png}
 ### Survival analysis 
 **AP curve** 
