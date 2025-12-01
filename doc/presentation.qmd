@@ -30,7 +30,12 @@ format:
 :::
 
 ::: column
-![](dataset.png){width="80%"}
+```{r}
+library("tidyverse")
+tab <- read_csv("../results/csv_tables/intro_table_for_presentation.csv")
+knitr::kable(head(tab, 4))
+```
+
 :::
 :::::
 
@@ -64,9 +69,10 @@ if (!file.exists(str_c(data_dir, treatment_tsv_file)) ) {
 
 ::: column
 -   Then converted the two raw files into a **tidy dataset**:
-    -   by removing NA values
-    -   creating survival event variables (0 and 1)
-    -   removing ap outlines (exceeding 100 to avoid distortion)
+    -   Joined the data and meta_data
+    -   Created numeric variables
+    -   Renamed variables
+    -   Removed outliers
 :::
 :::::
 
