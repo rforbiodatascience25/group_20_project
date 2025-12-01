@@ -112,7 +112,7 @@ df_resids <- df_long_nested_model |>
 Evident from the QQ-plots are a distinct departure from the normal-distribution in tails. This is present in each model and therefore it is likely that tumor size has outliers. This is investigated following by a histogram and QQ-plot.
 
 ```{r}
-(df |> 
+(df_num |> 
   ggplot() +
   geom_histogram(aes(x = size_of_primary_tumor), 
                  color = "black", alpha = 0.8, fill = "grey") +
@@ -121,7 +121,7 @@ save_and_show("tumor_histogram")
 ```
 
 ```{r}
-(df |>  
+(df_num |>  
   ggplot(aes(sample = size_of_primary_tumor)) +
   stat_qq() +
   stat_qq_line(color = "salmon") +
@@ -132,7 +132,7 @@ save_and_show("tumor_qq")
 These two plots confirm a definite departure from normality, indicative that log-transformed data would make a better fit.
 
 ```{r}
-(df |>
+(df_num |>
   filter(size_of_primary_tumor > 0) |>
   ggplot(aes(sample = log(size_of_primary_tumor))) +
   stat_qq() +
@@ -265,8 +265,7 @@ corr_df <- df_num |>
     weight,
     serum_hemoglobin,
     serum_prostatic_acid_phosphatase,
-    size_of_primary_tumor,
-    bone_metastases)
+    size_of_primary_tumor)
 
 # Compute raw correlation matrix
 corr_mat <- cor(corr_df, use = "pairwise.complete.obs")
@@ -417,7 +416,7 @@ ap_es_log_tidy_model <- lm(
     dosage +
     I(dosage^2) +
     I(dosage^2)*serum_hemoglobin +
-    bone_metastases +
+    bone_metastases*dosage +
     log(size_of_primary_tumor),
   data = df_num |> filter(size_of_primary_tumor > 0))
 
@@ -486,6 +485,4 @@ We can see that AP levels are expected to be substantially higher in patients wi
 
 # Interpretation
 
-In summary of this section variables have been confirmed significant to tumor size and by extension disease severity. On top of this conformation of correlation between variables have been confirmed to be used in a survival analysis.
-
-Blood factors have also been confirmed to be correlated with bone metastasis as to be expected but not with eachother.
+In summary, several variables have been confirmed to be significantly associated with tumor size, and therefore with disease severity. In addition, correlations between key variables such as metastasis and AP levels have been confirmed. Along with this confirmation correlations for use in subsequent survival analysis have been confirmed. Blood-derived factors showed the expected association with the presence of bone metastases, but they did not show significant correlation with each other, nor with treatment.

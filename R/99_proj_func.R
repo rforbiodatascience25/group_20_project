@@ -16,7 +16,7 @@ best_theme <- function(){
 }
 
 # function for saving and showing plot at once
-save_and_show <- function(plot, plot_name, save_location = "../results/figures/", filetype = ".svg"){
+save_and_show <- function(plot, plot_name, save_location = "../results/figures/", filetype = ".png"){
   
   save_loc = str_c(save_location, plot_name, filetype)
   
