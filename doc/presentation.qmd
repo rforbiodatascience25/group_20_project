@@ -12,127 +12,163 @@ format:
       #data-background-image: background.png
 ---
 
-## Introduction {background-image=background.png}
+## Introduction {background-image="background.png"}
 
-:::: {.columns}
-::: {.column}
-
+::::: columns
+::: column
 ### Dataset
-- The dataset focuses on patients with prostate cancer : one of the most common cancer types among men
-- Prostate dataset from this data base : https://hbiostat.org/data/
 
-### Aim 
-- Find out which treatment is the most effective
-- Determine which indicators are significants
-- Apply what we have learned
+-   The dataset focuses on patients with prostate cancer : one of the most common cancer types among men
+-   Prostate dataset from this data base : https://hbiostat.org/data/
 
-::::
-:::: {.column}
+### Aim
 
-![](dataset.png){width=80%}
+-   Find out which treatment is the most effective
+-   Determine which indicators are significant
+-   Apply what we have learned
+:::
 
-::::
+::: column
+![](dataset.png){width="80%"}
+:::
 :::::
 
-## Materials and methods {background-image=background.png}
+## Materials and methods {background-image="background.png"}
 
-### Data preparation 
-- We converted the raw file into a **tidy dataset**:
-  - by removing NA values 
-  - creating survival event variables (0 and 1)
-  - removing ap outlines (exceeding 100 to avoid distorsion)
+::::: columns
+::: column
+### Data preparation
 
-## Materials and methods {background-image=background2.png} 
-### PCA analysis
+-   Downloaded into two separate sets:
 
-## Materials and methods {background-image=background2.png}
-### Modelling
+### Metadata
 
+``` r
+data_dir <- "../data/"
+meta_tsv_file <- "01_meta_dat_load.tsv"
+if (!file.exists(str_c(data_dir, meta_tsv_file)) ) {
+  prostate |>
+    select(patno, stage, status, age, wt, pf, hx, sdate) |>
+    write_tsv(file = str_c(data_dir, meta_tsv_file))
+```
 
-## Materials and methods {background-image=background2.png}
-### Survival analysis
+### Treatment data
 
-## Results {background-image=background3.png}
-### PCA 
-:::: {.columns}
-::: {.column}
-- We should have obtained 2 or 3 principal components
-- We haven't achieved that, so we can't use PCA on our model
-::::
-:::: {.column}
-I think we can remove this slide bc we should have only 10 slides 
+``` r
+treatment_tsv_file <- "01_treatment_dat_load.tsv"
+if (!file.exists(str_c(data_dir, treatment_tsv_file)) ) {
+  prostate |>
+  select(-stage, -status, -age, -wt, -pf, -hx, -sdate) |>
+    write_tsv(file = str_c(data_dir, treatment_tsv_file))
+```
+:::
 
-![](../results/figures/PCA.svg){width=100%}
-::::
+::: column
+-   Then converted the two raw files into a **tidy dataset**:
+    -   by removing NA values
+    -   creating survival event variables (0 and 1)
+    -   removing ap outlines (exceeding 100 to avoid distorsion)
+:::
 :::::
 
-## Results {background-image=background3.png}
-### Modelling 
+## Materials and methods {background-image="background2.png"}
 
-:::: {.columns}
-::: {.column}
+-   For modelling we created two augmentations.
 
+``` r
+df_long <- df_num |>
+  select(c(patient_no,stage, age, weight, follow_up_months,
+                        sys_blood_pressure, dia_blood_pressure,
+                        serum_hemoglobin, serum_prostatic_acid_phosphatase,
+                        combined_index, size_of_primary_tumor, is_alive, performance, medical_history,ekg, bone_metastases, treatment, dosage)) |> 
+  pivot_longer(cols = c(stage, age, weight, follow_up_months,
+                        sys_blood_pressure, dia_blood_pressure,
+                        serum_hemoglobin, serum_prostatic_acid_phosphatase,
+                        combined_index, is_alive, performance, medical_history,ekg, bone_metastases, treatment, dosage),
+               names_to = "variable",
+               values_to = "value")
+```
+
+``` r
+augment_data <- full_df |>
+  mutate(MAP = (sys_blood_pressure+ 2 *dia_blood_pressure) / 3,
+         is_alive = case_when(is_alive == "alive" ~ 0,
+                              is_alive == "dead" ~ 1),
+         treatment_detail = case_when(
+           treatment == "placebo" ~ "Placebo",
+           treatment == "estrogen" & dosage == 0.2 ~ "0.2mg Estrogen",
+           treatment == "estrogen" & dosage == 1.0 ~ "1.0mg Estrogen",
+           treatment == "estrogen" & dosage == 5.0 ~ "5.0mg Estrogen",
+           TRUE ~ NA_character_),
+         treatment_detail = factor(treatment_detail, 
+                                   levels = c("Placebo", 
+                                              "0.2mg Estrogen", 
+                                              "1.0mg Estrogen", 
+                                              "5.0mg Estrogen")),)
+```
+
+## Results - Preliminary model {background-image="background3.png"}
+::::: columns
+::: column
 **Volcano plot**
 
-- Quick visual identification of the most impactful variables
-- Shows both effect size and statistical significance
-
-::::
-:::: {.column}
-
-![](../results/figures/linear_volcano.svg){width=100%}
+-   Quick visual identification of the most impactful variables
+-   Shows both effect size and statistical significance
 :::
-::::
 
-:::: {.columns}
-::: {.column}
-**Forest plot**
-
-For all significant variables, we plotted:
-- Estimates
-- 95% confidence intervals
-
-::::
-:::: {.column}
-
-![](../results/figures/forest_plot.svg){width=100%}
-::::
+::: column
+![](../results/figures/linear_volcano.svg){width="100%"}
+:::
 :::::
 
-**QQ-plot linear** 
+::::: columns
+::: column
+**Forest plot**
+
+For all significant variables, we plotted: - Estimates - 95% confidence intervals
+:::
+
+::: column
+![](../results/figures/forest_plot.svg){width="100%"}
+:::
+:::::
+
+**QQ-plot linear**
 
 **QQ-plot log**
 
-## Results {background-image=background3.png}
-### Survival analysis 
-:::: {.columns}
-::: {.column}
-**survival curve** 
-- 1.0 mg estrogen 
+## Results - Survival Analysis {background-image="background3.png"}
+
+::::: columns
+::: column
+**survival curve** - 1.0 mg estrogen
 :::
-::: {.column}
-![](../results/figures/surv_curv by treatment.svg){width=100%}
-::::
-:::::
-## Results {background-image=background3.png}
-### Survival analysis 
-::: {.layout-ncol}
-::: {.column}
-**Cox model**
-![](../results/figures/Univariate_cox_model.svg){width=100%}
+
+::: column
+![](../results/figures/surv_curv%20by%20treatment.svg){width="100%"}
 :::
-::: {.column}
-![](../results/figures/Multivariable_cox_model.svg){width=100%}
-::::
-- Significant risk factor : BM, tumor size, AP and age 
-- Significant protective factor : hemoglobine and 1.0 mg estrogen 
 :::::
-## Results {background-image=background3.png}
-### Survival analysis 
-**AP curve** 
 
-## Discussion {background-image=background4.png}
-- just few words to conclude 
-- how we can improve this project ? 
+## Results - Survival Analysis {background-image="background3.png"}
 
+::::: layout-ncol
+::: column
+**Cox model** ![](../results/figures/Univariate_cox_model.svg){width="100%"}
+:::
 
+::: column
+![](../results/figures/Multivariable_cox_model.svg){width="100%"}
+:::
+
+-   Significant risk factor : BM, tumor size, AP and age
+-   Significant protective factor : hemoglobine and 1.0 mg estrogen
+:::::
+
+## Results - Survival Analysis {background-image="background3.png"}
+
+**AP curve**
+
+## Discussion {background-image="background4.png"}
+-   How we can improve this project ?
+   - Tons more data we'd like to model!
+   - Comparison with antigen data!
