@@ -10,6 +10,7 @@ format:
     smaller: true #to write smaller the text 
     #title-slide-attributes: 
       #data-background-image: background.png
+    self-contained: true
 ---
 
 ## Introduction {background-image="../results/figures/background.png"}

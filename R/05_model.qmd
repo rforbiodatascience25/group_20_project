@@ -1,6 +1,8 @@
 ---
 title: "05_model"
-format: html
+format:
+  html:
+    self-contained: TRUE
 ---
 
 ```{r}

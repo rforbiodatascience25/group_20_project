@@ -1,6 +1,8 @@
 ---
 title: "02_tidy"
-format: html
+format:
+  html:
+    self-contained: TRUE
 ---
 
 ```{r}
