@@ -62,9 +62,8 @@ A volcano plot shows our estimate slope vs the p-value.
   labs(
     title = "Estimate vs -log10 of adjusted p-value",
     y = "-log10 of p-values adjusted for multiple testing",
-    x = "estimate")
-
-save_and_show("linear_volcano")
+    x = "estimate")) |>
+    save_and_show("linear_volcano")
 ```
 
 ## Forest plot
@@ -87,8 +86,8 @@ The forest plot shows the confidence interval of the modeled slope for all varia
     y = "Variable",
     title = "Variables with significant impact on tumor size"
   ) +
-  best_theme()
-save_and_show("linear_forest_plot")
+  best_theme()) |>
+  save_and_show("linear_forest_plot")
 ```
 
 ## Residual QQ-plots
@@ -107,7 +106,7 @@ df_resids <- df_long_nested_model |>
   stat_qq_line() +
   facet_wrap(~ variable, scales = "free") +
   theme_minimal()) |>
-save_and_show("linear_qq")
+  save_and_show("linear_qq")
 ```
 
 Evident from the QQ-plots are a distinct departure from the normal-distribution in tails. This is present in each model and therefore it is likely that tumor size has outliers. This is investigated following by a histogram and QQ-plot.
@@ -118,7 +117,6 @@ Evident from the QQ-plots are a distinct departure from the normal-distribution 
   geom_histogram(aes(x = size_of_primary_tumor), 
                  color = "black", alpha = 0.8, fill = "grey") +
   best_theme()) |> 
->>>>>>> 37008f1062125604e66f6b4f79aa092cdb659b67
 save_and_show("tumor_histogram")
 ```
 
@@ -135,7 +133,6 @@ These two plots confirm a definite departure from normality, indicative that log
 
 ```{r}
 (df |>
->>>>>>> 37008f1062125604e66f6b4f79aa092cdb659b67
   filter(size_of_primary_tumor > 0) |>
   ggplot(aes(sample = log(size_of_primary_tumor))) +
   stat_qq() +
@@ -254,7 +251,6 @@ The forest plot shows the confidence interval of the modelled slope for all vari
   ) +
   best_theme()) |> 
 save_and_show("log_forest")
->>>>>>> 37008f1062125604e66f6b4f79aa092cdb659b67
 ```
 
 # Correlation among continuous clinical variables
@@ -288,7 +284,8 @@ corr_long <- as.data.frame(corr_mat) |>
     values_to = "cor"
   )
 
-ggplot(corr_long, aes(x = Var2, y = Var1, fill = cor)) +
+corr_long |>
+  ggplot(aes(x = Var2, y = Var1, fill = cor)) +
   geom_tile(color = "white") +
   geom_text(aes(label = sprintf("%.2f", cor)), size = 3) +
   scale_fill_gradient2(
@@ -309,7 +306,6 @@ ggplot(corr_long, aes(x = Var2, y = Var1, fill = cor)) +
     x = NULL,
     y = NULL
   )
-
 ```
 
 This correlation matrix helps to identify redundant predictors. All the relevances is below 0.8, which indicates the selected variables can be seen as independent and used in a survival analysis. Given previous analysis it can also be concluded that shown variables
@@ -490,6 +486,6 @@ We can see that AP levels are expected to be substantially higher in patients wi
 
 # Interpretation
 
-In summary of this section variables have been confirmed significant to tumor size and by extention disease severity. On top of this conformation of correlation between variables have been confirmed to be used in a survival analysis.
+In summary of this section variables have been confirmed significant to tumor size and by extension disease severity. On top of this conformation of correlation between variables have been confirmed to be used in a survival analysis.
 
 Blood factors have also been confirmed to be correlated with bone metastasis as to be expected but not with eachother.
