@@ -13,7 +13,7 @@ Prostate dataset from this data base : https://hbiostat.org/data/
 
 ### Meta_data 
 
-This file contains only has these variables : patno, stage, status, age, wt, pf, hx, sdate
+This file contains only these variables : patient number, stage, status, age, weight, performance,  medical_history, study_date
 
 ### Treatment_data 
 
@@ -30,4 +30,6 @@ This file contains all the data required for the survival analysis
 ### Data for modelling 
 
 This file contains all the data required for modeling 
+
+
 
