@@ -32,6 +32,7 @@ format: html
 {{< include 07_PCA.qmd >}}
 
 ```{r}
+#| message: false
 #render all notebooks
 library("quarto")
 
@@ -55,6 +56,7 @@ if (!dir.exists("../results")){
 file.rename(html_names, file.path("../results", basename(html_names)))
 ```
 ```{r}
+#| message: false
 #Render the presentation as well
 quarto_render("../doc/presentation.qmd")#presentation shouldnt be moved according to proj description
 ```
