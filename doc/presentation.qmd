@@ -106,76 +106,76 @@ augment_data <- full_df |>
 ```
 
 ## Results - Preliminary model {background-image="../results/figures/background3.png"}
+
 ::::: columns
 ::: column
-**Volcano plot**
--   Quick visual identification of the most impactful variables
--   Shows both effect size and statistical significance
-:::
-
-::: column
+**Linear Volcano**\
 ![](../results/figures/linear_volcano.png){width="100%"}
 :::
-:::::
-
-::::: columns
-::: column
-**Forest plot**
-For all significant variables, we plotted: - Estimates - 95% confidence intervals
-:::
 
 ::: column
+**Linear Tree**\
 ![](../results/figures/linear_forest_plot.png){width="100%"}
 :::
 :::::
 
 ## Results - Preliminary model {background-image="../results/figures/background3.png"}
 
-::: columns
-::: column
-**QQ-plot linear**  
-![](../results/figures/linear_qq.png){width=100%}
-:::
-
-::: column
-**QQ-plot log**  
-![](../results/figures/log_qq.png){width=100%}
-:::
-:::
-
-
-## Results - Survival Analysis {background-image="../results/figures/background3.png"}
 ::::: columns
 ::: column
-**survival curve** - 1.0 mg estrogen
+**QQ-plot linear**\
+![](../results/figures/linear_qq.png){width="100%"}
 :::
 
 ::: column
-![](../results/figures/surv_curv%20by%20treatment.svg){width="100%"}
+**QQ-plot log**\
+![](../results/figures/log_qq.png){width="100%"}
 :::
 :::::
+
+## Results - Preliminary model {background-image="../results/figures/background3.png"}
+
+::::: columns
+::: column
+**Log-Volcano**\
+![](../results/figures/log_volcano.png){width="100%"}
+:::
+
+::: column
+**Log-Forest**\
+![](../results/figures/log_forest.png){width="100%"}
+:::
+:::::
+
+## Results - Survival Analysis {background-image="../results/figures/background3.png"}
+
+![](../results/figures/surv_curv%20by%20treatment.png){.stretch}
 
 ## Results - Survival Analysis {background-image="../results/figures/background3.png"}
 
 ::::: layout-ncol
 ::: column
-**Cox model** ![](../results/figures/Univariate_cox_model.svg){width="100%"}
+![](../results/figures/Univariate_cox_model.png){width="100%"}
 :::
 
 ::: column
-![](../results/figures/Multivariable_cox_model.svg){width="100%"}
+![](../results/figures/Multivarible_cox_model.png){width="100%"}
 :::
 
 -   Significant risk factor : BM, tumor size, AP and age
--   Significant protective factor : hemoglobine and 1.0 mg estrogen
+-   Significant protective factor : hemoglobin and 1.0 mg estrogen
 :::::
 
 ## Results - Survival Analysis {background-image="../results/figures/background3.png"}
 
-**AP curve**
+![](../results/figures/high_ap_comparison.png){.stretch}
 
 ## Discussion {background-image="../results/figures/background4.png"}
+
 ### How we can improve this project ?
+
 #### Tons more data we'd like to model!
+
 ##### Building our own prediction model based on AP-levels.
+
 #### Comparison with antigen data!
