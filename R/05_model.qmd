@@ -13,13 +13,15 @@ source("99_proj_func.R") # custom functions and theme
 
 ## Load data
 
-We load the data that was prepared for modelling:
+We load the data that was augmented for modelling:
 
 ```{r}
 load("../data/04_data_for_modelling.Rdata")
 ```
 
-## Modelling tumor size as a function of other factors
+# Modelling tumor size as a function of variables
+
+Firstly a preliminary analysis of linear model of variables against tumor size as an indicator of disease progression is done.
 
 ```{r}
 df_long_nested_model <- df_long_nested |>
@@ -34,12 +36,14 @@ df_long_nested_model <- df_long_nested |>
   mutate(p_adjusted = p.adjust(p.value)) |> # correct for multiple testing
   arrange(p_adjusted) #sort pvalues to reveal highest significance
 
-df_long_nested_model |> select(-data, -model_object, -term, -std.error, -statistic) |>  print()
+df_long_nested_model |> 
+  select(-data, -model_object, -term, -std.error, -statistic) |>  
+  print()
 ```
 
-We can see based on the linear modeling against tumor size, some expected factors rise to the top while the measurable indicators seem to fall short.
+Based on these models it appears that most variables have an independent correlation with tumor size. This will be illustrated below.
 
-### Volcano plot
+## Volcano plot
 
 A volcano plot shows our estimate slope vs the p-value.
 
@@ -59,10 +63,11 @@ df_long_nested_model |>
     title = "Estimate vs -log10 of adjusted p-value",
     y = "-log10 of p-values adjusted for multiple testing",
     x = "estimate")
+
 save_and_show("linear_volcano")
 ```
 
-### Forest plot
+## Forest plot
 
 The forest plot shows the confidence interval of the modeled slope for all variables
 
@@ -83,10 +88,13 @@ forest_plot <- df_long_nested_model |>
     title = "Variables with significant impact on tumor size"
   ) +
   best_theme()
+
 save_and_show("linear_forest_plot")
 ```
 
-### Residual plot
+## Residual QQ-plots
+
+Here we seek to validate if the linear models make sense of if there is a depature from expected normality.
 
 ```{r}
 df_resids <- df_long_nested_model |> 
@@ -100,33 +108,36 @@ ggplot(df_resids, aes(sample = .resid)) +
   stat_qq_line() +
   facet_wrap(~ variable, scales = "free") +
   theme_minimal()
+
 save_and_show("linear_qq")
 ```
 
-We see a distinct departure from the normal-distribution in our tails, we can investigate this further by looking at a size histogram and qq-plot.
+Evident from the QQ-plots are a distinct departure from the normal-distribution in tails. This is present in each model and therefore it is likely that tumor size has outliers. This is investigated following by a histogram and QQ-plot.
 
 ```{r}
-df |> 
+df_num |> 
   ggplot() +
   geom_histogram(aes(x = size_of_primary_tumor), 
                  color = "black", alpha = 0.8, fill = "grey") +
   best_theme()
+
 save_and_show("tumor_histogram")
 ```
 
 ```{r}
-df |>  
+df_num |>  
   ggplot(aes(sample = size_of_primary_tumor)) +
   stat_qq() +
   stat_qq_line(color = "salmon") +
   best_theme()
+
 save_and_show("tumor_qq")
 ```
 
-We can see a definte depature from normality, we can investigate this by doing a log-transformation of our plot.
+These two plots confirm a definite departure from normality, indicative that log-transformed data would make a better fit.
 
 ```{r}
-df |>
+df_num |>
   filter(size_of_primary_tumor > 0) |>
   ggplot(aes(sample = log(size_of_primary_tumor))) +
   stat_qq() +
@@ -135,18 +146,21 @@ df |>
 save_and_show("log_tumor_qq")
 ```
 
-As we see this is a much cleaner as has a much smaller depature from the normality assumption.
+Evident from the model is a much closer normal distribution even if an S-shape is present this is likely due to a few outliers, but overall it reveals a logarithmic scale may suit the data better.
 
-### Modelling based on log transformed data
+# Modelling based on log transformed data
 
-Log-transformation requires dropping patients with tumor size zero.
+As just confirmed it is to be investigated wether a log-transformation of our data improves correlations. This requires dropping patients with tumor size zero.
 
 ```{r}
-df_long_log <- df_long |> 
+df_long_log <- df_long_nested |> 
+  unnest(cols = c(data)) |>
   filter(size_of_primary_tumor > 0)
+
+df_long_log |> slice_sample(n = 10)
 ```
 
-Nesting the model objects for cleanliness.
+*Nesting the model objects for cleanliness.*
 
 ```{r}
 df_long_log_nest <- df_long_log |>
@@ -154,7 +168,7 @@ df_long_log_nest <- df_long_log |>
   nest()
 ```
 
-Model of logarithmic tumor size:
+## Model of logarithmic tumor size:
 
 ```{r}
 df_long_nested_model_log <- df_long_log_nest |>
@@ -169,10 +183,14 @@ df_long_nested_model_log <- df_long_log_nest |>
   mutate(p_adjusted = p.adjust(p.value)) |> # correct for multiple testing
   arrange(p_adjusted) #sort pvalues to reveal highest significance
 
-df_long_nested_model_log |> select(-data, -model_object, -term, -std.error, -statistic) |>  print()
+df_long_nested_model_log |> 
+  select(-data, -model_object, -term, -std.error, -statistic) |>  
+  print()
 ```
 
-#### Preparing for residual plots
+If we compare these p-values with earlier linear model we see a much more significant correlation between these and log-transformed tumor size. This will be validated with residual QQ-plots.
+
+## Preparing for residual plots
 
 ```{r}
 df_resids_log <- df_long_nested_model_log |> 
@@ -190,9 +208,9 @@ ggplot(df_resids_log, aes(sample = .resid)) +
 save_and_show("log_qq")
 ```
 
-We can see here and based on the p-values in the table and the subsequent qq-plots have a much smaller departure from normality.
+Aligning with our log-transformed tumor data the variables now also show a smaller from expected expectation normality.
 
-### Volcano plot
+## Volcano plot
 
 A volcano plot shows our estimate slope vs the p-value.
 
@@ -212,11 +230,9 @@ df_long_nested_model_log |>
     title = "Estimate vs -log10 of adjusted p-value",
     y = "-log10 of p-values adjusted for multiple testing",
     x = "estimate")
-
-save_and_show("log_volcano")
 ```
 
-### Forest plot
+## Forest plot
 
 The forest plot shows the confidence interval of the modelled slope for all variables
 
@@ -237,12 +253,69 @@ df_long_nested_model_log |>
     title = "Variables with significant impact on tumor size"
   ) +
   best_theme()
-save_and_show("log_forest")
+
 ```
 
-### Multivariate analysis
+# Correlation among continuous clinical variables
 
-Now that we've seen which variables significantly relate to `size_of_primary_tumor` we can do a multivariate model.
+Beyond comparison with tumor size a pairwise correlation for the quantitative biological and physiological measurements is computed to identify potential collinearity before survival analysis.
+
+```{r}
+# Select relevant numeric variables
+corr_df <- df_num |>
+  select(
+    age,
+    weight,
+    serum_hemoglobin,
+    serum_prostatic_acid_phosphatase,
+    size_of_primary_tumor,
+    bone_metastases)
+
+# Compute raw correlation matrix
+corr_mat <- cor(corr_df, use = "pairwise.complete.obs")
+```
+
+### Correlation heatmap
+
+```{r}
+# Convert matrix to long format for ggplot2
+corr_long <- as.data.frame(corr_mat) |>
+  rownames_to_column("Var1") |>
+  pivot_longer(
+    cols = -Var1,
+    names_to = "Var2",
+    values_to = "cor"
+  )
+
+ggplot(corr_long, aes(x = Var2, y = Var1, fill = cor)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = sprintf("%.2f", cor)), size = 3) +
+  scale_fill_gradient2(
+    low = "blue",
+    mid = "white",
+    high = "red",
+    midpoint = 0,
+    limits = c(-1, 1),
+    name = "Correlation"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1), # retate words
+    panel.grid = element_blank() # remove grid lines
+  ) +
+  labs(
+    title = "Correlation Matrix of Selected Variables",
+    x = NULL,
+    y = NULL
+  )
+
+```
+
+This correlation matrix helps to identify redundant predictors. All the relevances is below 0.8, which indicates the selected variables can be seen as independent and used in a survival analysis. Given previous analysis it can also be concluded that shown variables
+
+# Exploratory multivariate analysis
+
+Expanding on colliniarity and variables that have been shown significant in relation to log(`size_of_primary_tumor`) a few multivariate models are explored.
 
 ```{r}
 model_tidy <- lm(log(size_of_primary_tumor) ~ 
@@ -256,27 +329,13 @@ model_tidy <- lm(log(size_of_primary_tumor) ~
 print(model_tidy)
 ```
 
-### Distribution of p-values
-
-```{r}
-df_long_nested_model |> select(p.value) |> 
-  ggplot() +
-  geom_histogram(aes(x = p.value), 
-                 alpha = 0.8, 
-                 color = "black", 
-                 fill = "grey",
-                 bins = 5) +
-  best_theme()
-```
-
-## Logistic regression predicting survivability (bad results, shouldnt be used in analysis)
+## Logistic regression predicting survivability (bad results)
 
 A binary logistic regression is perfomed on the `is_alive` column. This is of limited biological relevanc but may reveal an interesting insight. interesting cols: select(is_alive, age, weight, size_of_primary_tumor,serum_prostatic_acid_phosphatase, performance)
 
 ```{r}
 # Turn df is_alive column into numeric variable for modelling:
-df_a_ts <- df |> mutate(is_alive = case_when(is_alive == "alive" ~ 0,
-                                            is_alive == "dead" ~ 1)) |> 
+df_a_ts <- df_num |>
   select(is_alive, size_of_primary_tumor) |> 
   drop_na()
 
@@ -293,7 +352,7 @@ df_a_ts |>
   best_theme()
 ```
 
-As we can see there seems to be a threshold for tumor size vs being alive at the time of study. As you can also hear from the formulation this is not a very interesting relationship but we will continue with the analysis anyway.
+There seems to be a threshold for tumor size vs being alive at the time of study.
 
 ### Fitting the logistic regression
 
@@ -319,9 +378,11 @@ df_a_ts |>
   best_theme()
 ```
 
-### Multivariate on measurements
+As mentioned there seems to be a certain correlation between these two but it is not a very telling analysis so it should not be considered.
 
-We wanted to explore if some of the blood and treatment data could have an explanatory effect on some of our variables. First explored is the tumor size, and potential effects of treatment, AP and hemoglobin.
+## Multivariate on measurements – No significant conclusions
+
+Mentioned preivously this is an exploration of blood and treatment data to evaluate whether it could have an explanatory effect. This is conducted due to QQ-plots showing some variation and S-tailing. First explored is the tumor size, and potential effects of treatment, AP and hemoglobin.
 
 ```{r}
 ap_ts_log_tidy_model <- lm(
@@ -349,13 +410,13 @@ ap_ts_log_tidy_model |>
   save_and_show_table("log_tumor_sig_fit")
 ```
 
-Seems that log(AP) does have a significant correlation with tumor size.
+Seems that log(AP) does have a significant correlation with tumor size but not more than the log tumor size.
 
-### Exploratory analysis of effects on prostatic acid phosphatase:
+## Exploratory analysis of effects on prostatic acid phosphatase
 
 ```{r}
 ap_es_log_tidy_model <- lm(
-  log(serum_prostatic_acid_phosphatase) ~ 
+  serum_prostatic_acid_phosphatase ~ 
     dosage +
     I(dosage^2) +
     I(dosage^2)*serum_hemoglobin +
@@ -376,43 +437,17 @@ ap_es_log_tidy_model |>
   print()
 ```
 
-We see the primary contributors to the AP levels to be tumor size and metastasis stage.
+We see the primary contributors to the AP levels to be bone metastasis, a relevant conclusion as this is prevalent in advanced diagnosis.
 
-### Exploratory multi-variable analysis of parameters with combination -- No significant results
-
-Beyond this, an investigation into variable combination was done.
-
-```{r}
-ap_ts_log_tidy_model <- lm(
-  log(size_of_primary_tumor) ~ 
-    log(serum_prostatic_acid_phosphatase)*dosage +
-    log(serum_prostatic_acid_phosphatase)*serum_hemoglobin +
-    dosage*serum_hemoglobin,
-  data = df_num |> filter(size_of_primary_tumor > 0))
-
-print(ap_ts_log_tidy_model |>
-        tidy())
-```
-
-```{r}
-ap_ts_log_tidy_model |> 
-  tidy() |>
-  mutate(padj = p.adjust(p.value, method = "fdr")) |>
-  filter(padj < 0.05) |>
-  print()
-```
-
-Resulting in no significant correlations, even if it was expected that estrogen dosage has an effect on tumor growth.
-
-### Bone metastasis
+## Exploratory analysis of effects on bone metastasis
 
 We wanted to investigate the correlation between bone metastatis and blood factors.
 
 ```{r}
 bm_ap_hb_model <- lm(
   bone_metastases ~
-    log(serum_prostatic_acid_phosphatase)*I(dosage**2) +
-    log(serum_prostatic_acid_phosphatase)*serum_hemoglobin +
+    serum_prostatic_acid_phosphatase*I(dosage**2) +
+    serum_prostatic_acid_phosphatase*serum_hemoglobin +
     dosage*serum_hemoglobin,
   data = df_num)
 
@@ -428,3 +463,32 @@ bm_ap_hb_model |>
 ```
 
 Here we can confirm that bone metastasis is indeed influenced by both AP and hemoglobin levels but not estrogen treatment dosage.
+
+# AP levels by bone metastasis status
+
+As just shown serum AP is commonly elevated in advanced prostate cancer and is often used as a surrogate marker for metastatic activity. We compare AP levels between patients with and without bone metastasis and draw a boxplot to show the result.
+
+```{r}
+
+df_num |>
+  ggplot(aes(
+    x = factor(bone_metastases), 
+    y = serum_prostatic_acid_phosphatase)) +
+  geom_boxplot() +
+  scale_y_log10() + # for log scale
+  labs(
+    x = "Bone metastases",
+    y = "AP (log scale)",
+    title = "AP levels (log scale) by bone metastases status"
+  )+
+  theme(plot.title = element_text(hjust = 0.5) # keep titles in the middle
+  )
+```
+
+We can see that AP levels are expected to be substantially higher in patients with bone metastases, reinforcing AP as a marker of advanced disease. This observation is consistent with the extreme AP values identified earlier in 04_describe.
+
+# Interpretation
+
+In summary of this section variables have been confirmed significant to tumor size and by extention disease severity. On top of this conformation of correlation between variables have been confirmed to be used in a survival analysis.
+
+Blood factors have also been confirmed to be correlated with bone metastasis as to be expected but not with eachother.

@@ -119,8 +119,7 @@ On top of nesting variables, a data object with attributed treatment class is ma
 
 ```{r}
 augment_data <- full_df |>
-  mutate(ap = serum_prostatic_acid_phosphatase,
-    MAP = (sys_blood_pressure+ 2 *dia_blood_pressure) / 3,
+  mutate(MAP = (sys_blood_pressure+ 2 *dia_blood_pressure) / 3,
          is_alive = case_when(is_alive == "alive" ~ 0,
                               is_alive == "dead" ~ 1),
          treatment_detail = case_when(
