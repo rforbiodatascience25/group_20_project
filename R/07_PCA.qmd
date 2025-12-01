@@ -73,3 +73,7 @@ data_pca2 <- data_normalized[, -5]
 data_pca2 <- princomp(data_normalized)
 fviz_eig(data_pca2, addlabels = TRUE)
 ```
+
+# Conclusion 
+
+Even when removing variables, we see that we cannot apply PCA to our model.
