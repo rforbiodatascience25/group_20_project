@@ -121,7 +121,7 @@ km_res <- km_fit(
 # draw survival curve
 (km_res |>
   ggplot(aes(x = time, y = surv, color = group)) +
-  geom_step(size = 1) +
+  geom_step(linewidth = 1) +
   labs(
     x = "Follow-up months",
     y = "Survival probability",
