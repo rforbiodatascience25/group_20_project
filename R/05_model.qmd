@@ -48,7 +48,7 @@ Based on these models it appears that most variables have an independent correla
 A volcano plot shows our estimate slope vs the p-value.
 
 ```{r}
-df_long_nested_model |> 
+(df_long_nested_model |> 
   ggplot(mapping = aes(x = estimate,
                      y = -log10(p_adjusted),
                      color = factor(p_adjusted < 0.05))) +
@@ -72,7 +72,7 @@ save_and_show("linear_volcano")
 The forest plot shows the confidence interval of the modeled slope for all variables
 
 ```{r}
-forest_plot <- df_long_nested_model |> 
+(forest_plot <- df_long_nested_model |> 
   filter(p_adjusted < 0.05) |> 
   ggplot(mapping = aes(x = estimate,
                        y = fct_reorder(variable, estimate),#sort by the slope 
@@ -88,7 +88,6 @@ forest_plot <- df_long_nested_model |>
     title = "Variables with significant impact on tumor size"
   ) +
   best_theme()
-
 save_and_show("linear_forest_plot")
 ```
 
@@ -103,46 +102,45 @@ df_resids <- df_long_nested_model |>
 ```
 
 ```{r}
-ggplot(df_resids, aes(sample = .resid)) +
+(ggplot(df_resids, aes(sample = .resid)) +
   stat_qq() +
   stat_qq_line() +
   facet_wrap(~ variable, scales = "free") +
-  theme_minimal()
-
+  theme_minimal()) |>
 save_and_show("linear_qq")
 ```
 
 Evident from the QQ-plots are a distinct departure from the normal-distribution in tails. This is present in each model and therefore it is likely that tumor size has outliers. This is investigated following by a histogram and QQ-plot.
 
 ```{r}
-df_num |> 
+(df |> 
   ggplot() +
   geom_histogram(aes(x = size_of_primary_tumor), 
                  color = "black", alpha = 0.8, fill = "grey") +
-  best_theme()
-
+  best_theme()) |> 
+>>>>>>> 37008f1062125604e66f6b4f79aa092cdb659b67
 save_and_show("tumor_histogram")
 ```
 
 ```{r}
-df_num |>  
+(df |>  
   ggplot(aes(sample = size_of_primary_tumor)) +
   stat_qq() +
   stat_qq_line(color = "salmon") +
-  best_theme()
-
+  best_theme()) |>
 save_and_show("tumor_qq")
 ```
 
 These two plots confirm a definite departure from normality, indicative that log-transformed data would make a better fit.
 
 ```{r}
-df_num |>
+(df |>
+>>>>>>> 37008f1062125604e66f6b4f79aa092cdb659b67
   filter(size_of_primary_tumor > 0) |>
   ggplot(aes(sample = log(size_of_primary_tumor))) +
   stat_qq() +
   stat_qq_line(color = "salmon") +
-  best_theme()
+  best_theme()) |> 
 save_and_show("log_tumor_qq")
 ```
 
@@ -200,11 +198,11 @@ df_resids_log <- df_long_nested_model_log |>
 ```
 
 ```{r}
-ggplot(df_resids_log, aes(sample = .resid)) +
+(ggplot(df_resids_log, aes(sample = .resid)) +
   stat_qq() +
   stat_qq_line() +
   facet_wrap(~ variable, scales = "free") +
-  theme_minimal()
+  theme_minimal()) |> 
 save_and_show("log_qq")
 ```
 
@@ -215,6 +213,7 @@ Aligning with our log-transformed tumor data the variables now also show a small
 A volcano plot shows our estimate slope vs the p-value.
 
 ```{r}
+(
 df_long_nested_model_log |> 
   ggplot(mapping = aes(x = estimate,
                      y = -log10(p_adjusted),
@@ -229,7 +228,8 @@ df_long_nested_model_log |>
   labs(
     title = "Estimate vs -log10 of adjusted p-value",
     y = "-log10 of p-values adjusted for multiple testing",
-    x = "estimate")
+    x = "estimate")) |> 
+save_and_show(plot_name = "log_volcano")
 ```
 
 ## Forest plot
@@ -237,7 +237,7 @@ df_long_nested_model_log |>
 The forest plot shows the confidence interval of the modelled slope for all variables
 
 ```{r}
-df_long_nested_model_log |> 
+(df_long_nested_model_log |> 
   filter(p_adjusted < 0.05) |> 
   ggplot(mapping = aes(x = estimate,
                        y = fct_reorder(variable, estimate),#sort byr the skope
@@ -252,8 +252,9 @@ df_long_nested_model_log |>
     y = "Variable",
     title = "Variables with significant impact on tumor size"
   ) +
-  best_theme()
-
+  best_theme()) |> 
+save_and_show("log_forest")
+>>>>>>> 37008f1062125604e66f6b4f79aa092cdb659b67
 ```
 
 # Correlation among continuous clinical variables
