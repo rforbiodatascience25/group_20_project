@@ -1,5 +1,5 @@
 ---
-title: "PCA"
+title: "07_PCA"
 format:
   html:
     self-contained: TRUE
@@ -10,73 +10,50 @@ format:
 ```{r}
 #| message: false
 library("tidyverse")
-library("readr")
-library("dplyr")
-library("factoextra")
+library("broom")
 source("99_proj_func.R") # custom functions and theme
 ```
 
 ## Load data
 
 ```{r}
-#df <- read_tsv(str_c("../data/02_dat_tidy.tsv.gz"))
-#df <- as.data.frame(df)
-treatment_df <- read_tsv("../data/01_treatment_dat_load.tsv")
-
+load("../data/04_data_for_modelling.Rdata")
 ```
 
-## PCA
+```{r}
+df <- df_num |> 
+  select(where(is.numeric)) |>
+  drop_na()
+```
+
+## Principal Component Analysis
 
 ### Numeric
 
 ```{r}
-df_numeric <- treatment_df[, -1] |> #don't take in account patient no
+pca_fit <- df |>
   select(where(is.numeric)) |> 
-  drop_na()
-
-#pca_res <- prcomp(df_numeric, scale = TRUE)
+  scale() |>
+  prcomp() # do PCA on scaled data
 ```
 
-### Normalization
+### Variance explanation
 
 ```{r}
-data_normalized <- scale(df_numeric)
-head(data_normalized)
+pca_fit |>
+  tidy(matrix = "eigenvalues") |>
+  ggplot(aes(PC, percent)) +
+  geom_col(fill = "lightblue", 
+           alpha = 0.8, 
+           color = "black") +
+  scale_y_continuous(
+    labels = scales::percent_format(),
+    expand = expansion(mult = c(0, 0.01))
+  ) +
+  best_theme() +
+  labs(y = "Percent variance explained")
 ```
 
-```{r}
-data_pca <- princomp(data_normalized)
-summary(data_pca)
-```
+# Conclusion
 
-### Visualization - Scree plot
-
-```{r}
-fviz_eig(data_pca, addlabels = TRUE) |> 
-save_and_show("PCA_plot")
-```
-
-### Visualization - PC1&PC2
-
-```{r}
-fviz_pca_ind(data_pca,
-             axes = c(1,2),     
-             repel = TRUE,       
-             col.ind = "blue", 
-             select.var = list(contrib = 10))  
-```
-
-## PCA 2 removing variable
-
-```{r}
-data_pca2 <- data_normalized[, -5] 
-```
-
-```{r}
-data_pca2 <- princomp(data_normalized)
-fviz_eig(data_pca2, addlabels = TRUE)
-```
-
-# Conclusion 
-
-Even when removing variables, we see that we cannot apply PCA to our model.
+After further testing it has been decided that the PCA will not reveal any additional information than already covered in previous analysis.
