@@ -12,7 +12,7 @@ format:
       #data-background-image: background.png
 ---
 
-## Introduction {background-image="background.png"}
+## Introduction {background-image="../results/figures/background.png"}
 
 ::::: columns
 ::: column
@@ -33,7 +33,7 @@ format:
 :::
 :::::
 
-## Materials and methods - Data preparation {background-image="background.png"}
+## Materials and methods - Data preparation {background-image="../results/figures/background.png"}
 
 ::::: columns
 ::: column
@@ -69,7 +69,7 @@ if (!file.exists(str_c(data_dir, treatment_tsv_file)) ) {
 :::
 :::::
 
-## Materials and methods {background-image="background2.png"}
+## Materials and methods {background-image="../results/figures/background2.png"}
 
 -   For modelling we created two augmentations.
 
@@ -105,7 +105,7 @@ augment_data <- full_df |>
                                               "5.0mg Estrogen")),)
 ```
 
-## Results - Preliminary model {background-image="background3.png"}
+## Results - Preliminary model {background-image="../results/figures/background3.png"}
 ::::: columns
 ::: column
 **Volcano plot**
@@ -129,7 +129,7 @@ For all significant variables, we plotted: - Estimates - 95% confidence interval
 :::
 :::::
 
-## Results - Preliminary model {background-image="background3.png"}
+## Results - Preliminary model {background-image="../results/figures/background3.png"}
 
 ::: columns
 ::: column
@@ -144,7 +144,7 @@ For all significant variables, we plotted: - Estimates - 95% confidence interval
 :::
 
 
-## Results - Survival Analysis {background-image="background3.png"}
+## Results - Survival Analysis {background-image="../results/figures/background3.png"}
 ::::: columns
 ::: column
 **survival curve** - 1.0 mg estrogen
@@ -155,7 +155,7 @@ For all significant variables, we plotted: - Estimates - 95% confidence interval
 :::
 :::::
 
-## Results - Survival Analysis {background-image="background3.png"}
+## Results - Survival Analysis {background-image="../results/figures/background3.png"}
 
 ::::: layout-ncol
 ::: column
@@ -170,11 +170,11 @@ For all significant variables, we plotted: - Estimates - 95% confidence interval
 -   Significant protective factor : hemoglobine and 1.0 mg estrogen
 :::::
 
-## Results - Survival Analysis {background-image="background3.png"}
+## Results - Survival Analysis {background-image="../results/figures/background3.png"}
 
 **AP curve**
 
-## Discussion {background-image="background4.png"}
+## Discussion {background-image="../results/figures/background4.png"}
 ### How we can improve this project ?
 #### Tons more data we'd like to model!
 ##### Building our own prediction model based on AP-levels.
