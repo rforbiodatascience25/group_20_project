@@ -13,8 +13,8 @@ format:
 
 ## Introduction {background-image=background.png}
 
-::: {.layout-ncol}
-:::: {.column}
+:::: {.columns}
+::: {.column}
 
 ### Dataset
 - Prostate dataset from this data base : https://hbiostat.org/data/
@@ -29,7 +29,7 @@ format:
 ![](dataset.png){width=80%}
 
 ::::
-::::
+:::::
 
 ## Materials and methods {background-image=background.png}
 
@@ -51,8 +51,8 @@ format:
 
 ## Results {background-image=background3.png}
 ### PCA 
-::: {.layout-ncol}
-:::: {.column}
+:::: {.columns}
+::: {.column}
 - We should have obtained 2 or 3 principal components
 - We haven't achieved that, so we can't use PCA on our model
 ::::
@@ -60,12 +60,12 @@ format:
 
 ![](../results/figures/PCA.svg){width=100%}
 ::::
-::::
+:::::
 
 ## Results {background-image=background3.png}
 ### Modelling 
 
-::: {.layout-ncol}
+:::: {.columns}
 ::: {.column}
 
 **Volcano plot**
@@ -78,10 +78,10 @@ format:
 
 ![](../results/figures/linear_volcano.svg){width=100%}
 :::
-::: 
+::::
 
-::: {.layout-ncol}
-:::: {.column}
+:::: {.columns}
+::: {.column}
 **Forest plot**
 
 For all significant variables, we plotted:
@@ -93,7 +93,7 @@ For all significant variables, we plotted:
 
 ![](../results/figures/forest_plot.svg){width=100%}
 ::::
-::::
+:::::
 
 **QQ-plot linear** 
 
@@ -101,16 +101,15 @@ For all significant variables, we plotted:
 
 ## Results {background-image=background3.png}
 ### Survival analysis 
-::: {.layout-ncol}
+:::: {.columns}
 ::: {.column}
 **survival curve** 
-- explain a bit 
-- 
+- 1.0 mg estrogen 
 :::
 ::: {.column}
 ![](../results/figures/surv_curv by treatment.svg){width=100%}
 ::::
-:::: 
+:::::
 ## Results {background-image=background3.png}
 ### Survival analysis 
 ::: {.layout-ncol}
@@ -122,8 +121,8 @@ For all significant variables, we plotted:
 ![](../results/figures/Multivariable_cox_model.svg){width=100%}
 ::::
 - Significant risk factor : BM, tumor size, AP and age 
-- Significant protective factor : hemoglobine and 1.0mg estrogen 
-:::: 
+- Significant protective factor : hemoglobine and 1.0 mg estrogen 
+:::::
 ## Results {background-image=background3.png}
 ### Survival analysis 
 **AP curve** 
