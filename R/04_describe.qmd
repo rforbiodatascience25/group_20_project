@@ -47,8 +47,7 @@ It contains data from 502 patients with each 20 variables that have been kept tr
   theme(legend.position = "right",
         axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
         axis.text.y = element_text(size = 6)) + 
-  labs(x = "Stage", y = "Count", fill = "Status")
-  
+  labs(x = "Stage", y = "Count", fill = "Status")) |> 
 save_and_show("status_comparison_hist")
 ```
 
@@ -104,8 +103,7 @@ A monotonic increase in tumor size across stages suggests that tumor size is a u
   theme(legend.position = "right",
         axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
         axis.text.y = element_text(size = 6)) + 
-  labs(x = "Stage", y = "Count", fill = "Dosage")
-
+  labs(x = "Stage", y = "Count", fill = "Dosage")) |> 
 save_and_show("dosage_dist_by_stage")
 ```
 

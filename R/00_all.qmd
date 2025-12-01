@@ -45,7 +45,8 @@ This project aims to investigate the clinical data in data set. This includes co
 library("quarto")
 
 qmds <- list.files(pattern = "\\.qmd$")
-qmds <- qmds[qmds != "00_all.qmd"]
+qmds <- qmds[qmds != "00_all.qmd"] #dont render current notebook i dont know if that would create a recursive loop
+qmds <- qmds[qmds != "0X_background.qmd"]
 
 for (qmd_document in qmds) {
   quarto_render(qmd_document, output_format = "html")}
