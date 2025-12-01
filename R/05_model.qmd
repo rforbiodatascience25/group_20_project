@@ -197,6 +197,7 @@ We can see here and based on the p-values in the table and the subsequent qq-plo
 A volcano plot shows our estimate slope vs the p-value.
 
 ```{r}
+(
 df_long_nested_model_log |> 
   ggplot(mapping = aes(x = estimate,
                      y = -log10(p_adjusted),
@@ -211,8 +212,9 @@ df_long_nested_model_log |>
   labs(
     title = "Estimate vs -log10 of adjusted p-value",
     y = "-log10 of p-values adjusted for multiple testing",
-    x = "estimate") |> 
-save_and_show("log_volcano")
+    x = "estimate")
+)|> 
+save_and_show(plot_name = "log_volcano")
 ```
 
 ### Forest plot

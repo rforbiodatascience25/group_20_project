@@ -16,15 +16,16 @@ best_theme <- function(){
 }
 
 # function for saving and showing plot at once
-save_and_show <- function(plot_name, plot, save_location = "../results/figures/", filetype = ".svg"){
-  curr_plot = plot
+save_and_show <- function(plot, plot_name, save_location = "../results/figures/", filetype = ".svg"){
   
   save_loc = str_c(save_location, plot_name, filetype)
-  if (!dir.exists(save_location)) { # check that it exists first
-    dir.create(save_loc, recursive = TRUE)}
   
-  ggsave(save_loc, curr_plot)
-  print(curr_plot) #cursed
+  if (!dir.exists(dirname(save_loc))) {
+    dir.create(dirname(save_loc), recursive = TRUE)
+  }
+  
+  ggplot2::ggsave(save_loc, plot)
+  print(plot)
 }
 
 save_and_show_table <- function(input_table, table_name, save_location = "../results/csv_tables/", filetype = ".csv"){
