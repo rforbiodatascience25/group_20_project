@@ -8,6 +8,7 @@ format:
 ```{r}
 #| message: false
 library("tidyverse")
+source("99_proj_func.R")
 set.seed(2025)
 ```
 
