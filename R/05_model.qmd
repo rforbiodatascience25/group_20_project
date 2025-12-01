@@ -211,8 +211,7 @@ df_long_nested_model_log |>
   labs(
     title = "Estimate vs -log10 of adjusted p-value",
     y = "-log10 of p-values adjusted for multiple testing",
-    x = "estimate")
-
+    x = "estimate") |> 
 save_and_show("log_volcano")
 ```
 
