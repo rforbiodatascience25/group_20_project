@@ -6,22 +6,28 @@ format: html
 ## Load library
 
 ```{r}
+#| message: false
 library("tidyverse")
+source("99_proj_func.R")
 ```
 
 ## Load data
 
+Loading the prepared tidy data.
+
 ```{r}
+#| message: false
 data_dir <- "data/"
 tidy_file <- "02_dat_tidy.tsv.gz"
 
 full_df <- read_tsv("../data/02_dat_tidy.tsv.gz")
-glimpse(full_df)
+full_df |> slice_sample(n = 10)
 ```
 
-
 ## Filtering out extreme AP values
+
 Its noted on the Vanderbilt repo that some entries have extremely high AP values. Unfortunantly the explanation is no longer available. For this reason we choose to remove these rows entirely:
+
 ```{r}
 full_df |>
   ggplot(aes(x=serum_prostatic_acid_phosphatase)) +
@@ -31,52 +37,22 @@ full_df |>
   ) +
   best_theme()
 ```
-Based on the plot we discard all entries with AP values above 500
+
+Based on the plot we discard all entries with AP values above 250
+
 ```{r}
 cutoff <- 250
 full_df <- full_df |> 
   filter(serum_prostatic_acid_phosphatase <= cutoff)
 ```
 
-
-
-## Augment data
-
-MAP (Mean Arterial Pressure) is the average blood pressure in a person’s arteries during one cardiac cycle (one heartbeat).
-
 ```{r}
-augment_data<- full_df |>
-  mutate(ap = serum_prostatic_acid_phosphatase,
-    MAP = (sys_blood_pressure+ 2 *dia_blood_pressure) / 3,
-         is_alive = case_when(is_alive == "alive" ~ 0,
-                              is_alive == "dead" ~ 1),
-         treatment_detail = case_when(
-           treatment == "placebo" ~ "Placebo",
-           treatment == "estrogen" & dosage == 0.2 ~ "0.2mg Estrogen",
-           treatment == "estrogen" & dosage == 1.0 ~ "1.0mg Estrogen",
-           treatment == "estrogen" & dosage == 5.0 ~ "5.0mg Estrogen",
-           TRUE ~ NA_character_),
-         treatment_detail = factor(treatment_detail, 
-                                   levels = c("Placebo", 
-                                              "0.2mg Estrogen", 
-                                              "1.0mg Estrogen", 
-                                              "5.0mg Estrogen")),)
-
-glimpse(augment_data)
-data_dir <- "../data/"
-aug_tsv_file <- "03_dat_aug.tsv.gz"
-augment_data |> write_tsv(file = str_c(data_dir,aug_tsv_file))
-```
-
-## Prep data for modellin (notebook 5)
-
-```{r}
-full_df |> slice_sample(n = 30) |> print()
+full_df |> slice_sample(n = 10)
 ```
 
 ## Preparing data for modelling
 
-Modelling tumor size vs other factors may pose an interesting investigation and see which factors may be important for tumor development. We need to first conert the columns that are not already numeric to a numeric representation. This can be done in a number of ways but to keep it similar we choose that the higher the number the worse for the potion. Eg normal activity gets low and stuck in bed gets high.
+Modelling tumor size vs other factors may pose an interesting investigation and see which factors may be important for tumor development in advanced stages. We need to first convert the columns that are not already numeric to a numeric representation. This can be done in a number of ways but to keep it similar we choose that the higher the number the worse for the potion. For example normal activity is assigned zero and low activity such as stuck in bed is assigned four.
 
 ```{r}
 df_num <- full_df |>
@@ -116,8 +92,11 @@ df_long <- df_num |>
                         combined_index, is_alive, performance, medical_history,ekg, bone_metastases, treatment, dosage),
                names_to = "variable",
                values_to = "value")
-print(df_long |> head(5))
+
+print(df_long |> slice_sample(n = 10))
 ```
+
+For analysis nesting variables is required.
 
 ```{r}
 df_long_nested <- df_long |>
@@ -127,12 +106,41 @@ df_long_nested |> head(10) |> print() #quick check
 ```
 
 ### Save this data
+
 This data is saved as .Rdata to ensure that types are carried over
+
 ```{r}
 save(df_long_nested, df_num, file = "../data/04_data_for_modelling.Rdata")
 ```
 
+## Augment data for treatment class
 
+On top of nesting variables, a data object with attributed treatment class is made. The MAP (Mean Arterial Pressure) variable is added to this set. MAP is the average blood pressure in a person’s arteries during one cardiac cycle (one heartbeat).
 
+```{r}
+augment_data <- full_df |>
+  mutate(MAP = (sys_blood_pressure+ 2 *dia_blood_pressure) / 3,
+         is_alive = case_when(is_alive == "alive" ~ 0,
+                              is_alive == "dead" ~ 1),
+         treatment_detail = case_when(
+           treatment == "placebo" ~ "Placebo",
+           treatment == "estrogen" & dosage == 0.2 ~ "0.2mg Estrogen",
+           treatment == "estrogen" & dosage == 1.0 ~ "1.0mg Estrogen",
+           treatment == "estrogen" & dosage == 5.0 ~ "5.0mg Estrogen",
+           TRUE ~ NA_character_),
+         treatment_detail = factor(treatment_detail, 
+                                   levels = c("Placebo", 
+                                              "0.2mg Estrogen", 
+                                              "1.0mg Estrogen", 
+                                              "5.0mg Estrogen")),)
 
+augment_data |> slice_sample(n = 10)
+```
 
+### Saving treatment class data
+
+```{r}
+data_dir <- "../data/"
+aug_tsv_file <- "03_dat_aug.tsv.gz"
+augment_data |> write_tsv(file = str_c(data_dir,aug_tsv_file))
+```

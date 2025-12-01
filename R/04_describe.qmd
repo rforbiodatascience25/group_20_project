@@ -3,7 +3,7 @@ title: "04_describe"
 format: html
 ---
 
-### Load libraries
+# Load libraries
 
 ```{r}
 #| message: false
@@ -13,11 +13,11 @@ library("ggridges")
 source("99_proj_func.R")
 ```
 
-## Data description
+# Data description
 
 This dataset is from Green and Bryar who have analysed data from a randomized clinical trial of prostate cancer paitients in stage 3 and 4. In this project the same data will be analysed
 
-### Meta data
+## Meta data
 
 Below is the full prostate data set after tidying.
 
@@ -29,10 +29,10 @@ prostate_tidy
 
 It contains data from 502 patients with each 20 variables that have been kept track of. The most important in this instance is; stage, combined stage index, cause of death, treatment, dosage and clinical measurements. These include: weight, age, medical history, systolic/diastolic blood pressure, ekg, serum hemoglobin, primary tumor size in cm^2^, serum prostatic acid phosphatase (PAP) and bone metastasis indicator. Distribution of these various parameters can be seen below.
 
-### Stage distribution
+## Stage distribution
 
 ```{r}
-prostate_tidy |>
+(prostate_tidy |>
   mutate(stage = factor(stage),
          is_alive = factor(is_alive)) |>
   ggplot(aes(
@@ -48,6 +48,7 @@ prostate_tidy |>
         axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
         axis.text.y = element_text(size = 6)) + 
   labs(x = "Stage", y = "Count", fill = "Status")
+  
 save_and_show("status_comparison_hist")
 ```
 
@@ -60,10 +61,32 @@ prostate_tidy |>
 
 As mentioned the dataset consists of 502 patients, as seen above. 96 of were in stage 3 and alive while 193 of had died. For stage for 4, 52 were alive and 161 patients had died.
 
-### Treatment groups
+```{r}
+#| warning: false
+full_df <- prostate_tidy |> mutate(stage = factor(stage, levels = c(3,4)))
+
+full_df |>
+  ggplot(aes(x = stage, y = size_of_primary_tumor)) +
+  geom_boxplot(outlier.shape = NA) +      # hide the outliners
+  geom_jitter(width = 0.15, alpha = 0.6) + 
+  coord_cartesian(ylim = c(0, 40)) +      # focus on the main part
+  labs(
+    x = "Clinical stage",
+    y = "Size of primary tumor",
+    title = "Tumor size across clinical stages"
+  ) +
+  theme_minimal()+
+  theme(plot.title = element_text(hjust = 0.5) # keep titles in the middle
+  )
+  
+```
+
+A monotonic increase in tumor size across stages suggests that tumor size is a useful measure of disease progression and may influence survival risk.
+
+## Treatment groups
 
 ```{r}
-prostate_tidy |>
+(prostate_tidy |>
   mutate(stage = factor(stage),
          dosage = factor(dosage)) |>
   ggplot(aes(x = stage,
@@ -82,10 +105,11 @@ prostate_tidy |>
         axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
         axis.text.y = element_text(size = 6)) + 
   labs(x = "Stage", y = "Count", fill = "Dosage")
+
 save_and_show("dosage_dist_by_stage")
 ```
 
-### Tumor size distribution
+## Tumor size distribution
 
 We can see there the treatment groups are very evenly distributed.
 
@@ -104,7 +128,7 @@ prostate_tidy |>
   theme(legend.position = "none")
 ```
 
-### Causes of death
+## Causes of death
 
 Most importantly we also want to investigate the most prevelant causes of death.
 
@@ -118,10 +142,10 @@ prostate_tidy |>
 
 As expected the leading cause of death of individuals in the study were prostatic cancer or other types, with heart and vascular also have a prominent representation.
 
-### Density of measurements: PAP and Serum hemoglobin
+## Density of measurements: AP and Serum hemoglobin
 
 ```{r}
-prostate_tidy |>  
+(prostate_tidy |>  
   pivot_longer(
     cols = c(serum_prostatic_acid_phosphatase, serum_hemoglobin),
     names_to = "variable",
@@ -137,8 +161,8 @@ prostate_tidy |>
       "serum_prostatic_acid_phosphatase" = "PAP",
       "serum_hemoglobin" = "Serum Hemoglobin")) +
   labs(x = "Value", fill = "Variable") +
-  best_theme()
+  best_theme()) |> 
 save_and_show("distribution_of_sh_and_pap")
 ```
 
-We see the vast majority of the variables are within the bottom range of respectively 0-5 for PAP and 8-20 for Serum hemoglobin. Worth noting is that present in the data set are several outliers who show very high measurements of PAP, up to 900+.
+We see the vast majority of the variables are within the bottom range of respectively 0-5 for AP and 8-20 for Serum hemoglobin. Worth noting is that present in the data set are several outliers who show very high measurements of AP, up to 900+.
