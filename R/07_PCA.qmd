@@ -54,6 +54,6 @@ pca_fit |>
   labs(y = "Percent variance explained")
 ```
 
-# Conclusion
+## Conclusion
 
 After further testing it has been decided that the PCA will not reveal any additional information than already covered in previous analysis.
