@@ -33,7 +33,7 @@ format:
 :::
 :::::
 
-## Materials and methods - Data preparation {background-image="../results/figures/background.png"}
+## Materials and methods - Data preparation {background-image="../results/figures/background2.png"}
 
 ::::: columns
 ::: column
@@ -65,7 +65,7 @@ if (!file.exists(str_c(data_dir, treatment_tsv_file)) ) {
 -   Then converted the two raw files into a **tidy dataset**:
     -   by removing NA values
     -   creating survival event variables (0 and 1)
-    -   removing ap outlines (exceeding 100 to avoid distorsion)
+    -   removing ap outlines (exceeding 100 to avoid distortion)
 :::
 :::::
 
@@ -149,7 +149,17 @@ augment_data <- full_df |>
 
 ## Results - Survival Analysis {background-image="../results/figures/background3.png"}
 
-![](../results/figures/surv_curv%20by%20treatment.png){.stretch}
+::::: columns
+::: column
+![](../results/figures/surv_curv%20by%20treatment.png){width="100%"}
+:::
+
+::: column
+![](../results/figures/high_ap_comparison.png){width="100%"}
+:::
+:::::
+
+
 
 ## Results - Survival Analysis {background-image="../results/figures/background3.png"}
 
@@ -161,14 +171,7 @@ augment_data <- full_df |>
 ::: column
 ![](../results/figures/Multivarible_cox_model.png){width="100%"}
 :::
-
--   Significant risk factor : BM, tumor size, AP and age
--   Significant protective factor : hemoglobin and 1.0 mg estrogen
 :::::
-
-## Results - Survival Analysis {background-image="../results/figures/background3.png"}
-
-![](../results/figures/high_ap_comparison.png){.stretch}
 
 ## Discussion {background-image="../results/figures/background4.png"}
 
