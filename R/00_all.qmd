@@ -11,18 +11,30 @@ Prostate cancer is one of the most common cancer types among men, and approximat
 
 This project aims to investigate the clinical data in data set. This includes correlation of markers; hemoglobin and prostatic acid phosphatase in patients, with the goal to determine if the biomarkers are a good estimate when predicting or evaluating prostate cancer. Along with this the effect of hormone treatment will also be investigated.
 
-# Notebook 1
+# Load Data
 
 {{< include 01_load.qmd >}}
 
-# Notebook 2
+# Tidying Data
 
 {{< include 02_tidy.qmd >}}
 
-# Notebook 4
+# Augment Data
+
+{{< include 03_augment.qmd >}}
+
+# Description
 
 {{< include 04_describe.qmd >}}
 
-# Notebook 5
+# Analysis
 
 {{< include 05_model.qmd >}}
+
+# Survial Analysis
+
+{{< include 06_survival_analysis.qmd >}}
+
+# PCA Analysis
+
+{{< include 07_PCA.qmd >}}
