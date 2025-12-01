@@ -213,7 +213,7 @@ df_long_nested_model_log |>
     title = "Estimate vs -log10 of adjusted p-value",
     y = "-log10 of p-values adjusted for multiple testing",
     x = "estimate")
-)|> 
+) |> 
 save_and_show(plot_name = "log_volcano")
 ```
 
@@ -222,7 +222,7 @@ save_and_show(plot_name = "log_volcano")
 The forest plot shows the confidence interval of the modelled slope for all variables
 
 ```{r}
-df_long_nested_model_log |> 
+(df_long_nested_model_log |> 
   filter(p_adjusted < 0.05) |> 
   ggplot(mapping = aes(x = estimate,
                        y = fct_reorder(variable, estimate),#sort byr the skope
@@ -237,7 +237,7 @@ df_long_nested_model_log |>
     y = "Variable",
     title = "Variables with significant impact on tumor size"
   ) +
-  best_theme()
+  best_theme()) |> 
 save_and_show("log_forest")
 ```
 
