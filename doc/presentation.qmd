@@ -7,23 +7,26 @@ format:
     footer: "Project-group20"
     slide-number: true
     transition: "fade"
-    title-slide-attributes: 
-      data-background-image: background.png
+    #title-slide-attributes: 
+      #data-background-image: background.png
 ---
 
 ## Introduction {background-image=background.png}
 
-:::: {.columns}
+::: {.layout-ncol}
 :::: {.column}
 
 ### Dataset
 - Prostate dataset from this data base : https://hbiostat.org/data/
 - The dataset focuses on patients with prostate cancer
+- Prostate cancer is one of the most common cancer types among men
+- Methods used to diagnose include Serum hemoglobin testing and prostatic acid phosphatase (PAP) testing
+- Elevated PAP levels -> increased activity in prostate tissue which is often a precursor for prostate cancer or other prostate related diseases
 
 ::::
 :::: {.column}
 
-put the dataset image like this : ![](dataset.png){width=80%}
+![](dataset.png){width=80%}
 
 ::::
 ::::
@@ -48,15 +51,53 @@ put the dataset image like this : ![](dataset.png){width=80%}
 
 ## Results {background-image=background3.png}
 ### PCA 
+::: {.layout-ncol}
+:::: {.column}
 - We should have obtained 2 or 3 principal components
 - We haven't achieved that, so we can't use PCA on our model
+::::
+:::: {.column}
 
 ![](../results/figures/PCA.svg){width=100%}
+::::
+::::
 
 ## Results {background-image=background3.png}
 ### Modelling 
--put the plots we want 
+
+::: {.layout-ncol}
+::: {.column}
+
+**Volcano plot**
+
+- Quick visual identification of the most impactful variables
+- Shows both effect size and statistical significance
+
+::::
+:::: {.column}
+
+![](../results/figures/linear_volcano.svg){width=100%}
+:::
+::: 
+
+::: {.layout-ncol}
+:::: {.column}
+**Forest plot**
+
+For all significant variables, we plotted:
+- Estimates
+- 95% confidence intervals
+
+::::
+:::: {.column}
+
 ![](../results/figures/forest_plot.svg){width=100%}
+::::
+::::
+
+**QQ-plot linear** 
+
+**QQ-plot log**
 
 ## Results {background-image=background3.png}
 ### Survival analysis 
@@ -68,6 +109,8 @@ put the dataset image like this : ![](dataset.png){width=80%}
 :::
 ::: {.column}
 ![](../results/figures/correlation_plot.svg){width=100%}
+::::
+:::: 
 ## Results {background-image=background3.png}
 ### Survival analysis 
 **survival curve** 
