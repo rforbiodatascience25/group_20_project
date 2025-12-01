@@ -1,0 +1,6 @@
+patno,stage,is_alive,cause_of_death,age,wt,pf,hx,sdate,rx,dtime,sbp,dbp,ekg,hg,sz,sg,ap,bm
+373,3,dead,other specific non-ca,76,116,normal activity,1,1979-05-17,0.2 mg estrogen,48,13,8,heart strain,16.8984375,2,9,0.399963379,0
+407,4,dead,prostatic ca,78,95,normal activity,0,1978-12-06,placebo,36,15,9,heart strain,13.7988281,55,10,3.19970703,0
+59,3,dead,cerebrovascular,78,118,normal activity,1,1979-03-02,0.2 mg estrogen,3,16,9,heart strain,12.3984375,3,9,0.399963379,0
+395,4,dead,prostatic ca,81,98,normal activity,1,1978-06-25,1.0 mg estrogen,55,13,6,normal,11.1992188,38,12,8.69921875,1
+159,4,alive,NA,78,116,normal activity,0,1979-05-21,0.2 mg estrogen,51,15,10,heart strain,15.6992188,6,13,1.09985352,0

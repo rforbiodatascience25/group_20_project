@@ -62,7 +62,7 @@ full_df <- full_df |>
            sep = " - ") |> 
   mutate(is_alive = factor(is_alive))
          
-full_df |> slice_sample(n = 20) |> print()
+full_df |> slice_sample(n = 5) |> save_and_show_table("intro_table_for_presentation")
 ```
 
 We will also split the treatment variable into dosage and treatment group
