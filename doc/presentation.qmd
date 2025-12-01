@@ -1,6 +1,6 @@
 ---
 title: "Project presentation"
-author: "Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexander Videbek, Qiju Chen"
+author: "Laurine Panel, Rasmus Tøffner-Clausen, Mathias Glerup Filtenborg, Alexander Videbæk, Qiju Chen"
 date: "2 dec 2025"
 format:
   revealjs:
@@ -33,15 +33,13 @@ format:
 :::
 :::::
 
-## Materials and methods {background-image="background.png"}
+## Materials and methods - Data preparation {background-image="background.png"}
 
 ::::: columns
 ::: column
-### Data preparation
-
 -   Downloaded into two separate sets:
 
-### Metadata
+#### Metadata
 
 ``` r
 data_dir <- "../data/"
@@ -52,7 +50,7 @@ if (!file.exists(str_c(data_dir, meta_tsv_file)) ) {
     write_tsv(file = str_c(data_dir, meta_tsv_file))
 ```
 
-### Treatment data
+#### Treatment data
 
 ``` r
 treatment_tsv_file <- "01_treatment_dat_load.tsv"
@@ -169,6 +167,7 @@ For all significant variables, we plotted: - Estimates - 95% confidence interval
 **AP curve**
 
 ## Discussion {background-image="background4.png"}
--   How we can improve this project ?
-   - Tons more data we'd like to model!
-   - Comparison with antigen data!
+### How we can improve this project ?
+#### Tons more data we'd like to model!
+##### Building our own prediction model based on AP-levels.
+#### Comparison with antigen data!

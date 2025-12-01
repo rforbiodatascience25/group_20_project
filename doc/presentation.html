@@ -10,7 +10,7 @@
 <link href="presentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.5.57">
 
-  <meta name="author" content="Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexander Videbek, Qiju Chen">
+  <meta name="author" content="Laurine Panel, Rasmus Tøffner-Clausen, Mathias Glerup Filtenborg, Alexander Videbæk, Qiju Chen">
   <meta name="dcterms.date" content="2025-12-02">
   <title>Project presentation</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -397,7 +397,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexander Videbek, Qiju Chen 
+Laurine Panel, Rasmus Tøffner-Clausen, Mathias Glerup Filtenborg, Alexander Videbæk, Qiju Chen 
 </div>
 </div>
 </div>
@@ -423,22 +423,21 @@ Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexander Vid
 <p><img data-src="dataset.png" style="width:80.0%"></p>
 </div></div>
 </section>
-<section id="materials-and-methods" class="slide level2" data-background-image="background.png">
-<h2>Materials and methods</h2>
+<section id="materials-and-methods---data-preparation" class="slide level2" data-background-image="background.png">
+<h2>Materials and methods - Data preparation</h2>
 <div class="columns">
 <div class="column">
-<h3 id="data-preparation">Data preparation</h3>
 <ul>
 <li>Downloaded into two separate sets:</li>
 </ul>
-<h3 id="metadata">Metadata</h3>
+<h4 id="metadata">Metadata</h4>
 <div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>data_dir <span class="ot">&lt;-</span> <span class="st">"../data/"</span></span>
 <span id="cb1-2"><a href=""></a>meta_tsv_file <span class="ot">&lt;-</span> <span class="st">"01_meta_dat_load.tsv"</span></span>
 <span id="cb1-3"><a href=""></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(<span class="fu">str_c</span>(data_dir, meta_tsv_file)) ) {</span>
 <span id="cb1-4"><a href=""></a>  prostate <span class="sc">|&gt;</span></span>
 <span id="cb1-5"><a href=""></a>    <span class="fu">select</span>(patno, stage, status, age, wt, pf, hx, sdate) <span class="sc">|&gt;</span></span>
 <span id="cb1-6"><a href=""></a>    <span class="fu">write_tsv</span>(<span class="at">file =</span> <span class="fu">str_c</span>(data_dir, meta_tsv_file))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<h3 id="treatment-data">Treatment data</h3>
+<h4 id="treatment-data">Treatment data</h4>
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>treatment_tsv_file <span class="ot">&lt;-</span> <span class="st">"01_treatment_dat_load.tsv"</span></span>
 <span id="cb2-2"><a href=""></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(<span class="fu">str_c</span>(data_dir, treatment_tsv_file)) ) {</span>
 <span id="cb2-3"><a href=""></a>  prostate <span class="sc">|&gt;</span></span>
@@ -455,7 +454,7 @@ Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexander Vid
 </ul>
 </div></div>
 </section>
-<section id="materials-and-methods-1" class="slide level2" data-background-image="background2.png">
+<section id="materials-and-methods" class="slide level2" data-background-image="background2.png">
 <h2>Materials and methods</h2>
 <ul>
 <li>For modelling we created two augmentations.</li>
@@ -519,7 +518,7 @@ Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexander Vid
 </div></div>
 </section>
 <section id="results---survival-analysis-1" class="slide level2" data-background-image="background3.png">
-<h2>Results - Survival analysis</h2>
+<h2>Results - Survival Analysis</h2>
 <div class="layout-ncol">
 <div class="column">
 <p><strong>Cox model</strong> <img data-src="../results/figures/Univariate_cox_model.svg" style="width:100.0%"></p>
@@ -532,16 +531,15 @@ Laurine Panel, Rasmus Toeffner-Clausen, Mathias Glerup Filtenborg, Alexander Vid
 </div>
 </section>
 <section id="results---survival-analysis-2" class="slide level2" data-background-image="background3.png">
-<h2>Results - Survival analysis</h2>
+<h2>Results - Survival Analysis</h2>
 <p><strong>AP curve</strong></p>
 </section>
 <section id="discussion" class="slide level2" data-background-image="background4.png">
 <h2>Discussion</h2>
-<ul>
-<li>How we can improve this project ?</li>
-<li>Tons more data we’d like to model!</li>
-<li>Comparison with antigen data!</li>
-</ul>
+<h3 id="how-we-can-improve-this-project">How we can improve this project ?</h3>
+<h4 id="tons-more-data-wed-like-to-model">Tons more data we’d like to model!</h4>
+<h5 id="building-our-own-prediction-model-based-on-ap-levels.">Building our own prediction model based on AP-levels.</h5>
+<h4 id="comparison-with-antigen-data">Comparison with antigen data!</h4>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 <p>Project-group20</p>
