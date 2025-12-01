@@ -64,9 +64,9 @@ if (!dir.exists("../results")){
 
 # move each file
 file.rename(html_names, file.path("../results", basename(html_names)))
-
 ```
 ```{r}
-
+#Render the presentation as well
+quarto_render("../doc/presentation.qmd")#presentation shouldnt be moved according to proj description
 ```
 
