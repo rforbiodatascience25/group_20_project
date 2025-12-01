@@ -244,7 +244,7 @@ ggplot(km_res, aes(x = time, y = surv, color = group)) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5) # keep titles in the middle
   )
-
+save_and_show("surv_curv by treatment")
 ```
 
 The Kaplan–Meier curves illustrate how survival probabilities decline over time for patients receiving estrogen therapy versus placebo. The 1.0mg Estrogen group have a significantly larger survival probability than the other, which provides a brief insight that this can be considered as a effective treatment.
@@ -333,6 +333,7 @@ ggplot(uni_df, aes(x = HR, y = Variable)) +
                                color = uni_df$label_color,
                                face = uni_df$label_face)
   )
+save_and_show("Univariate_cox_model")
 ```
 
 In the forest plot, we marked variables with HR > 1 orange and those with HR < 1 blue. We also show those variables with significant diference red and emphasis their names. The univariate Cox analyses shows that Age, AP, tumor size, bone metastasis, and clinical stage were all associated with increased hazard of death, consistent with known clinical behavior of advanced prostate cancer. Hemoglobin was protective. Among treatment arms, only 1.0mg estrogen showed a significantly reduced hazard compared with placebo. MAP showed no significant association with survival.
@@ -409,7 +410,7 @@ ggplot(multi_df, aes(x = HR, y = Variable)) +
     plot.title = element_text(size = 18, face = "bold"),
     panel.grid.major.y = element_blank()
   )
-
+save_and_show("Multivarible_cox_model")
 ```
 
 The forest plot is similar to the one we used in 5.1. We can see that Bone metastasis, tumor size, AP, and age were strong and statistically significant risk factors, while hemoglobin and the 1.0mg estrogen treatment remained significant protective factors. MAP had no independent prognostic value. Clinical stage lost significance after adjustment, likely due to the stronger explanatory power of AP and metastatic status. These findings indicate that tumor burden biomarkers are the dominant determinants of survival, and 1.0mg estrogen demonstrated a robust and independent therapeutic benefit.
