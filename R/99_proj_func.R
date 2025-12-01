@@ -33,7 +33,7 @@ save_and_show_table <- function(input_table, table_name, save_location = "../res
 
 # function to calculate KM
 km_fit <- function(data, time_col, event_col, group_col) {
-  split(data, data[[group_col]]) %>% 
+  split(data, data[[group_col]]) |> 
     map_dfr(function(df) {
       
       # time order
