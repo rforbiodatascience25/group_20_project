@@ -210,8 +210,7 @@ These patterns validate clinically meaningful associations: Weight and hemoglobi
 
 # 4.Survival analysis
 
-To evaluate whether treatment has an effect on time-to-event outcomes, we perform non-parametric survival analysis using Kaplan–Meier estimators and log-rank tests. The dataset provides follow-up time (`follow_up_months`) and a binary mortality indicator (`event`), which allows construction of survival objects.
-* Some of the analysis(like cox models) was done by the package survive, in those sections we'll pay more attention to data visualization.
+To evaluate whether treatment has an effect on time-to-event outcomes, we perform non-parametric survival analysis using Kaplan–Meier estimators and log-rank tests. The dataset provides follow-up time (`follow_up_months`) and a binary mortality indicator (`event`), which allows construction of survival objects. \* Some of the analysis(like cox models) was done by the package survive, in those sections we'll pay more attention to data visualization.
 
 ## 4.1 Kaplan–Meier survival curves by treatment group
 
@@ -229,7 +228,7 @@ Next, we estimate the Kaplan–Meier curves for the four treatment groups: 0.2 m
 km_res <- km_fit(
   data = full_df,
   time = "follow_up_months",
-  event = "event",
+  event = "is_alive",
   group = "treatment_detail"
 )
 
@@ -258,7 +257,7 @@ logrank_test <- survdiff(surv_obj ~ treatment_detail, data = full_df)
 logrank_test
 ```
 
-The p-value is 0.04 (< 0.05), which indicates statistically significant differences in survival between the treatment groups. The results we get from 4.1 is valid.
+The p-value is 0.04 (\< 0.05), which indicates statistically significant differences in survival between the treatment groups. The results we get from 4.1 is valid.
 
 # 5. Cox proportional hazards modeling
 
@@ -281,7 +280,7 @@ cox_vars <- c("treatment_detail",
 
 # merge the results
 uni_df <- map_df(cox_vars, function(v) {
-  formula <- as.formula(str_c("Surv(follow_up_months, event) ~ ", v))
+  formula <- as.formula(str_c("Surv(follow_up_months, is_alive) ~ ", v))
   model <- coxph(formula, data = full_df)
   tidy(model, exponentiate = TRUE, conf.int = TRUE) |>
     mutate(variable = v)
@@ -336,7 +335,7 @@ ggplot(uni_df, aes(x = HR, y = Variable)) +
 save_and_show("Univariate_cox_model")
 ```
 
-In the forest plot, we marked variables with HR > 1 orange and those with HR < 1 blue. We also show those variables with significant diference red and emphasis their names. The univariate Cox analyses shows that Age, AP, tumor size, bone metastasis, and clinical stage were all associated with increased hazard of death, consistent with known clinical behavior of advanced prostate cancer. Hemoglobin was protective. Among treatment arms, only 1.0mg estrogen showed a significantly reduced hazard compared with placebo. MAP showed no significant association with survival.
+In the forest plot, we marked variables with HR \> 1 orange and those with HR \< 1 blue. We also show those variables with significant diference red and emphasis their names. The univariate Cox analyses shows that Age, AP, tumor size, bone metastasis, and clinical stage were all associated with increased hazard of death, consistent with known clinical behavior of advanced prostate cancer. Hemoglobin was protective. Among treatment arms, only 1.0mg estrogen showed a significantly reduced hazard compared with placebo. MAP showed no significant association with survival.
 
 ## 5.2 Multivariable Cox model
 
@@ -344,7 +343,7 @@ We next fit a multivariable model incorporating treatment group and major clinic
 
 ```{r}
 cox_multi <- coxph(
-  Surv(follow_up_months, event) ~
+  Surv(follow_up_months, is_alive) ~
     treatment_detail +
     age +
     serum_hemoglobin +
@@ -481,7 +480,7 @@ full_df <- full_df |>
 km_ap <- km_fit(
   data = full_df,
   time_col = "follow_up_months",
-  event_col = "event",
+  event_col = "is_alive",
   group_col = "ap_risk_group"
 )
 
@@ -514,6 +513,7 @@ Patients with extremely elevated AP typically show sharply reduced survival, hig
 The exploration of outliers reveals distinct, clinically meaningful high-risk subgroups. These findings demonstrate that AP is a strong prognostic indicator and justify its inclusion in multivariable survival modeling (Section 5) as well as in clinical interpretation of treatment outcomes.
 
 # 7. Conclusion
+
 This survival analysis, based on 491 patients, successfully estimated Kaplan–Meier survival curves and fitted both univariate and multivariable Cox proportional hazards models. Kaplan–Meier comparisons demonstrated significant differences in survival probabilities among the placebo, 0.2 mg, 1.0 mg, and 5.0 mg estrogen treatment groups.
 
 In univariate Cox analyses, Age, AP, tumor size, bone metastasis, and clinical stage were strong adverse prognostic factors, whereas hemoglobin was protective. Among the treatment arms, only the 1.0 mg estrogen dose demonstrated a significantly reduced hazard of death relative to placebo. MAP showed no significant association with survival.
