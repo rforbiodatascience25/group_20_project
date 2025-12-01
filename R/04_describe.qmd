@@ -32,7 +32,7 @@ It contains data from 502 patients with each 20 variables that have been kept tr
 ### Stage distribution
 
 ```{r}
-prostate_tidy |>
+(prostate_tidy |>
   mutate(stage = factor(stage),
          is_alive = factor(is_alive)) |>
   ggplot(aes(
@@ -47,7 +47,7 @@ prostate_tidy |>
   theme(legend.position = "right",
         axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
         axis.text.y = element_text(size = 6)) + 
-  labs(x = "Stage", y = "Count", fill = "Status")
+  labs(x = "Stage", y = "Count", fill = "Status")) |> 
 save_and_show("status_comparison_hist")
 ```
 
@@ -63,7 +63,7 @@ As mentioned the dataset consists of 502 patients, as seen above. 96 of were in 
 ### Treatment groups
 
 ```{r}
-prostate_tidy |>
+(prostate_tidy |>
   mutate(stage = factor(stage),
          dosage = factor(dosage)) |>
   ggplot(aes(x = stage,
@@ -81,7 +81,7 @@ prostate_tidy |>
   theme(legend.position = "right",
         axis.text.x = element_text(angle = 10, hjust = 1, size = 10, vjust = 1.5), 
         axis.text.y = element_text(size = 6)) + 
-  labs(x = "Stage", y = "Count", fill = "Dosage")
+  labs(x = "Stage", y = "Count", fill = "Dosage")) |> 
 save_and_show("dosage_dist_by_stage")
 ```
 
@@ -121,7 +121,7 @@ As expected the leading cause of death of individuals in the study were prostati
 ### Density of measurements: PAP and Serum hemoglobin
 
 ```{r}
-prostate_tidy |>  
+(prostate_tidy |>  
   pivot_longer(
     cols = c(serum_prostatic_acid_phosphatase, serum_hemoglobin),
     names_to = "variable",
@@ -137,7 +137,7 @@ prostate_tidy |>
       "serum_prostatic_acid_phosphatase" = "PAP",
       "serum_hemoglobin" = "Serum Hemoglobin")) +
   labs(x = "Value", fill = "Variable") +
-  best_theme()
+  best_theme()) |> 
 save_and_show("distribution_of_sh_and_pap")
 ```
 
